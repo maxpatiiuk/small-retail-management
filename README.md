@@ -2,11 +2,10 @@
 
 ```
 TODO: add documentation and screenshots
+TODO: add a simple laoder https://nextjs.org/docs/app/building-your-application/routing/loading-ui-and-streaming
 TODO: update site.webmanifest
-TODO: add
-github repo description
-TODO: firebase -> settings -> environemnt type ->
-production
+TODO: add github repo description
+TODO: firebase -> settings -> environemnt type -> production
 
 TODO: update the following url: Source code for
 [https://one-c-table.vercel.app/](https://one-c-table.vercel.app/).

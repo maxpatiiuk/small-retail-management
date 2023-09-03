@@ -1,4 +1,4 @@
-import { IR, RA, RR } from "./utilities";
+import { IR, RA, RR } from './types';
 
 const languages = ['en', 'uk'] as const;
 type Language = (typeof languages)[number];
