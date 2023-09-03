@@ -3,6 +3,7 @@ import React from 'react';
 
 import { localization } from '../const/localization';
 import { robots, themeColor } from '../const/siteConfig';
+import { Auth } from './Auth';
 
 function extractTitle(title: string): string {
   if (title === '') return localization.siteTitle;
@@ -13,19 +14,19 @@ function extractTitle(title: string): string {
 function Layout({
   title = '',
   children,
-  privatePage = false,
   manifest = '/site.webmanifest',
   icon,
   props,
   useDefaultDescription = true,
+  auth = true,
 }: {
   readonly title?: string;
   readonly useDefaultDescription?: boolean;
   readonly children: React.ReactNode;
-  readonly privatePage?: boolean;
   readonly manifest?: string;
   readonly icon?: string;
   readonly props?: JSX.Element;
+  readonly auth?: boolean;
 }): JSX.Element {
   const fullTitle = extractTitle(title);
   return (
@@ -34,10 +35,7 @@ function Layout({
         <title>{fullTitle}</title>
         <meta property="og:title" content={fullTitle} />
         <link rel="icon" href={icon ?? '/favicon.ico'} />
-        <meta
-          name="robots"
-          content={privatePage ? 'noindex,nofollow' : robots}
-        />
+        <meta name="robots" content="noindex,nofollow" />
         {useDefaultDescription && (
           <>
             <meta name="description" content={localization.siteDescription} />
@@ -79,7 +77,7 @@ function Layout({
         <meta name="theme-color" content={themeColor} />
         {props}
       </Head>
-      <div id="root">{children}</div>
+      <div id="root">{auth ? <Auth>{children}</Auth> : children}</div>
     </>
   );
 }

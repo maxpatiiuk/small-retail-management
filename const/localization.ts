@@ -1,31 +1,32 @@
-/**
- * Until there is need to provide localization for other languages,
- * all localizable strings would be stored in one place. This helps with
- * consistency and reusability.
- */
+import { dictionary } from '../lib/localization';
 
-export const localization = {
-  siteTitle: 'Max Patiiuk',
-  siteDescription: `Full Stack Web Developer`,
-  siteKeywords: `
-    Max Patiiuk, Maksym Patiiuk, Maksym Patiiuk CV, Maksym Patiiuk portfolio,
-    mambo shop, mambo, В гостях у MAMBO, мамбо, mambo experimental,
-    Максим Патіюк
+export const localization = dictionary({
+  siteTitle: { en: 'Small Retail Management', uk: 'Таблиця' },
+  // TODO: add
+  siteDescription: { en: '', uk: '' },
+  siteKeywords: { en: '', uk: '' },
+  loading: { en: 'Loading...', uk: 'Загрузка...' },
+  signIn: { en: 'Sign In', uk: 'Вхід' },
+  wrongEmail: {
+    en: (email: string) => `
+      User with ${email} email is not authorized to use this application. Please
+      contact your system administrator
+    `,
+    uk: (email: string) => `
+      Користувач із адресою електронної пошти ${email} не має прав на використання
+      цієї програми. Будь ласка зверніться до свого системного адміністратора
   `,
-  siteAuthor: 'Max Patiiuk',
-  siteAuthorTitle: 'SDE II at Esri',
-  myProjects: 'My projects',
-  yes: 'Yes',
-  no: 'No',
-  returnToHomePage: 'Return to homepage',
-  viewOnGitHub: 'View this project on GitHub',
-  unexpectedError: 'Unexpected Error',
-  reload: 'Reload',
-  previousPage: 'Previous page',
-  unexpectedErrorHasOccurred: 'An unexpected error has occurred.',
-  notFound: 'Oops! Nothing was found',
-  notFoundDescription: `
-    The page you are looking for might have been removed,
-    had its name changed or is temporarily unavailable.
-  `,
-};
+  },
+  notFound: {
+    en: 'Page not found',
+    uk: 'Сторінку не знайдено',
+  },
+  notFoundDescription: {
+    en: 'The page you are looking for might have been removed had its name changed or is temporarily unavailable.',
+    uk: 'Сторінку, яку ви шукаєте, можливо, було видалено, змінено її назву або вона тимчасово недоступна.',
+  },
+  returnToHomePage: {
+    en: 'Return to the home page',
+    uk: 'Повернутися на головну сторінку',
+  },
+});
