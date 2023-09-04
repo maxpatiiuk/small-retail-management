@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { ErrorPage } from './components/ErrorPage';
+import { ErrorPage } from './Molecules/ErrorPage';
 
 export default function GlobalError({
   error,
@@ -12,7 +12,7 @@ export default function GlobalError({
   return (
     <html>
       <body>
-        <ErrorPage error={error} />;
+        <ErrorPage error={error.message} />;
       </body>
     </html>
   );

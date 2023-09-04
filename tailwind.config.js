@@ -4,7 +4,7 @@
  */
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./pages/**/*.tsx', './components/**/*.tsx'],
+  content: ['./app/**/*.tsx'],
   corePlugins: {
     // Disable unneeded components to reduce performance impact
     float: false,
@@ -12,8 +12,6 @@ module.exports = {
     skew: false,
     caretColor: false,
     sepia: false,
-    // Don't want to bother with adding back styles:
-    preflight: false,
   },
   darkMode: 'media',
   plugins: [require('@tailwindcss/forms')],

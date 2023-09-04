@@ -8,23 +8,20 @@ import {
   signInWithPopup,
 } from 'firebase/auth';
 import type { Auth } from 'firebase/auth';
-import { app, db } from '../lib/firebase';
+import { app } from '../lib/firebase';
 import { State } from 'typesafe-reducer';
 import { localization } from '../const/localization';
 import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../lib/firestore';
+
+const auth = getAuth(app);
+auth.useDeviceLanguage();
 
 export function Auth({
   children,
 }: {
   readonly children: React.ReactNode;
 }): React.ReactNode {
-  const [auth, setAuth] = React.useState<Auth | undefined>(undefined);
-  React.useEffect(() => {
-    const auth = getAuth(app);
-    auth.useDeviceLanguage();
-    setAuth(auth);
-  }, []);
-
   const [state, setState] = React.useState<
     | State<'SignedIn'>
     | State<'NotSignedIn', { readonly error?: string }>

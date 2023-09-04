@@ -29,4 +29,44 @@ export const localization = dictionary({
     en: 'Return to the home page',
     uk: 'Повернутися на головну сторінку',
   },
+  editEmployees: {
+    en: 'Edit employees',
+    uk: 'Редагувати працівників',
+  },
+  addEmployee: {
+    en: 'Add employee',
+    uk: 'Додати працівника',
+  },
+  save: {
+    en: 'Save',
+    uk: 'Зберегти',
+  },
+  cancel: {
+    en: 'Cancel',
+    uk: 'Скасувати',
+  },
+  delete: {
+    en: 'Delete',
+    uk: 'Видалити',
+  },
+  name: {
+    en: 'Name',
+    uk: "Ім'я",
+  },
+  salaryPercentage: {
+    en: 'Salary percentage',
+    uk: 'Відсоток зарплати',
+  },
+  baseSalary: {
+    en: 'Base salary',
+    uk: 'Базова зарплата',
+  },
+  visible: {
+    en: 'Visible',
+    uk: 'Показувати',
+  },
+  error: {
+    en: 'Error',
+    uk: 'Помилка',
+  },
 });

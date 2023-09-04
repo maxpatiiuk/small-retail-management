@@ -1,16 +1,27 @@
 import { IR, RA, RR } from './types';
+import { mappedFind } from './utils';
 
 const languages = ['en', 'uk'] as const;
 type Language = (typeof languages)[number];
 let language: Language = 'en';
+let detectedLanguage = false;
 
-export function setLanguage(newLanguage: Language): void {
-  const parsedLanguage = languages.find(
-    (language) =>
-      newLanguage.startsWith(language) || language.startsWith(newLanguage)
+export function detectLanguage(): Language {
+  if (detectedLanguage) return language;
+
+  const parsedLanguage = mappedFind(
+    globalThis.navigator?.languages ?? [],
+    (userLanguage) =>
+      languages.find(
+        (appLanguage) =>
+          userLanguage.startsWith(appLanguage) ||
+          appLanguage.startsWith(userLanguage)
+      )
   );
-  if (typeof parsedLanguage === 'string') language = parsedLanguage;
-  else console.error('Unknown language');
+
+  detectedLanguage = true;
+  language = parsedLanguage ?? language;
+  return language;
 }
 
 /**
