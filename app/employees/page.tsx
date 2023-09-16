@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Form } from '../Atoms';
+import { Form, H1 } from '../Atoms';
 import { Button } from '../Atoms/Buttons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
@@ -15,9 +15,10 @@ export default function Employees(): JSX.Element {
   const router = useRouter();
   return (
     <>
-      <h1>{localization.editEmployees}</h1>
+      <H1>{localization.editEmployees}</H1>
       <Form
         onSubmit={(): void => loading(save().then(() => router.push('../')))}
+        className="flex-1"
       >
         <Table.Container className="grid-cols-[repeat(4,auto),min-content] gap-2">
           <Table.Head>

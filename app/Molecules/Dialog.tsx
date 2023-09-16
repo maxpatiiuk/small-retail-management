@@ -1,4 +1,5 @@
 import React from 'react';
+import { H2 } from '../Atoms';
 
 export function Dialog({
   header,
@@ -32,7 +33,7 @@ export function Dialog({
       }
     >
       <div className="flex flex-col gap-4 p-6">
-        <h2>{header}</h2>
+        <H2>{header}</H2>
         {children}
         {buttons && <div className="flex justify-end">{buttons}</div>}
       </div>
