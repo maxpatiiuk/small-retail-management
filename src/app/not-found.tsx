@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { ErrorPage } from './Molecules/ErrorPage';
-import { localization } from './const/localization';
-import { H2 } from './Atoms';
+import { ErrorPage } from '../components/Molecules/ErrorPage';
+import { localization } from '../const/localization';
+import { H2 } from '../components/Atoms';
 
 export default function NotFound(): JSX.Element {
   return (

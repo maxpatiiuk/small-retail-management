@@ -1,8 +1,8 @@
-import { localization } from './const/localization';
+import { localization } from '../const/localization';
 import { Metadata } from 'next';
-import { title } from './lib/layout';
-import { Link } from './Atoms/Link';
-import { H1 } from './Atoms';
+import { title } from '../lib/layout';
+import { Link } from '../components/Atoms/Link';
+import { H1 } from '../components/Atoms';
 
 export default function MainPage(): JSX.Element {
   return (

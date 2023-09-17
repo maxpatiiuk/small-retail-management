@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { ErrorPage } from './Molecules/ErrorPage';
+import { ErrorPage } from '../components/Molecules/ErrorPage';
 
 export default function GlobalError({
   error,

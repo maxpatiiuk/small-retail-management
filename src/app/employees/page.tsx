@@ -1,13 +1,13 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { Form, H1 } from '../Atoms';
-import { Button } from '../Atoms/Buttons';
-import { Link } from '../Atoms/Link';
-import { Submit } from '../Atoms/Submit';
-import { Table } from '../Atoms/Table';
-import { localization } from '../const/localization';
-import { loading } from '../Molecules/Loading';
+import { Form, H1 } from '../../components/Atoms';
+import { Button } from '../../components/Atoms/Buttons';
+import { Link } from '../../components/Atoms/Link';
+import { Submit } from '../../components/Atoms/Submit';
+import { Table } from '../../components/Atoms/Table';
+import { localization } from '../../const/localization';
+import { loading } from '../../components/Molecules/Loading';
 import { EmployeesContext, EmployeesSaveContext } from '.';
 import React from 'react';
 

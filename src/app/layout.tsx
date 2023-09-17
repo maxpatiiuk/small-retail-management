@@ -3,11 +3,11 @@
 import 'tailwindcss/tailwind.css';
 
 import React from 'react';
-import { ServiceWorker } from './Molecules/ServiceWorker';
-import { detectLanguage } from './lib/localization';
-import { localization } from './const/localization';
-import { themeColor } from './const/siteConfig';
-import { Auth } from './Molecules/Auth';
+import { ServiceWorker } from '../components/Molecules/ServiceWorker';
+import { detectLanguage } from '../lib/localization';
+import { localization } from '../const/localization';
+import { themeColor } from '../const/siteConfig';
+import { Auth } from '../components/Molecules/Auth';
 import { EmployeesProvider } from './employees';
 
 export default function RootLayout({

@@ -1,8 +1,8 @@
 import React from 'react';
-import { RA } from '../lib/types';
-import { localization } from '../const/localization';
+import { RA } from '../../lib/types';
+import { localization } from '../../const/localization';
 import { Dialog } from './Dialog';
-import { flippedPromise } from '../lib/promise';
+import { flippedPromise } from '../../lib/promise';
 
 export const loading = (promise: Promise<unknown>): void => handler?.(promise);
 

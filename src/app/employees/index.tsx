@@ -1,10 +1,10 @@
 import React from 'react';
-import { RA } from '../lib/types';
+import { RA } from '../../lib/types';
 import { collection, orderBy, query } from 'firebase/firestore';
-import { db } from '../lib/firestore';
-import { Employee } from './type';
-import { LoadingBar } from '../Molecules/Loading';
-import { useRecords } from '../Hooks/useRecords';
+import { db } from '../../lib/firestore';
+import { Employee } from './types';
+import { LoadingBar } from '../../components/Molecules/Loading';
+import { useRecords } from '../../components/Hooks/useRecords';
 
 export function EmployeesProvider({
   children,

@@ -1,5 +1,5 @@
 import React from 'react';
-import type { RA } from '../lib/types';
+import type { RA } from '../../lib/types';
 import {
   deleteDoc,
   onSnapshot,
@@ -8,7 +8,7 @@ import {
   addDoc,
   collection,
 } from 'firebase/firestore';
-import { db } from '../lib/firestore';
+import { db } from '../../lib/firestore';
 
 // FIXME: remove
 const debug = true;

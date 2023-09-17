@@ -8,11 +8,11 @@ import {
   signInWithPopup,
 } from 'firebase/auth';
 import type { Auth } from 'firebase/auth';
-import { app } from '../lib/firebase';
+import { app } from '../../lib/firebase';
 import { State } from 'typesafe-reducer';
-import { localization } from '../const/localization';
+import { localization } from '../../const/localization';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../lib/firestore';
+import { db } from '../../lib/firestore';
 
 const auth = getAuth(app);
 auth.useDeviceLanguage();
@@ -43,11 +43,11 @@ export function Auth({
                   : {
                       type: 'NotSignedIn',
                       error: localization.wrongEmail(email),
-                    }
+                    },
               );
             } else setState({ type: 'NotSignedIn' });
           }),
-    [auth]
+    [auth],
   );
 
   function signIn(): void {

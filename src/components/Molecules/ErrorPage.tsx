@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { localization } from '../const/localization';
+import { localization } from '../../const/localization';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Centered, H1 } from '../Atoms';
