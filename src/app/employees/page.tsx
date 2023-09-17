@@ -26,9 +26,9 @@ export default function Employees(): JSX.Element {
         onSubmit={(): void =>
           loading(saveEmployees(employees).then(() => router.push('../')))
         }
-        className="flex-1"
+        className="flex-1 overflow-hidden"
       >
-        <Table.Container className="grid-cols-[repeat(4,auto)] gap-1 sm:gap-2">
+        <Table.Container className="grid-cols-[repeat(4,auto)] gap-1 flex-1 sm:gap-2">
           <TableHeader />
           <Table.Body>
             {employees.map((employee, index) => (
@@ -46,7 +46,6 @@ export default function Employees(): JSX.Element {
             ))}
           </Table.Body>
         </Table.Container>
-        <span className="-mt-4 flex-1" />
         <div className="flex flex-wrap gap-2">
           <Button.Info
             onClick={(): void =>

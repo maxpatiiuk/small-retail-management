@@ -40,7 +40,7 @@ export default function RootLayout({
       </head>
       {/* Fixes https://stackoverflow.com/questions/75337953/what-causes-nextjs-warning-extra-attributes-from-the-server-data-new-gr-c-s-c */}
       <body suppressHydrationWarning={true}>
-        <div id="root" className="flex min-h-screen flex-col gap-4 p-2 sm:p-4">
+        <div id="root" className="flex h-screen flex-col gap-4 p-2 sm:p-4">
           <LoadingProvider />
           <Auth>
             <EmployeesProvider>{children}</EmployeesProvider>
