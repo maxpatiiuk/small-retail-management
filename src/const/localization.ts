@@ -89,6 +89,10 @@ export const localization = dictionary({
     en: 'Today',
     uk: 'Сьогодні',
   },
+  day: {
+    en: 'Day',
+    uk: 'День',
+  },
   week: {
     en: 'Week',
     uk: 'Тиждень',

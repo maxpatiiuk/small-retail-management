@@ -1,26 +1,13 @@
 {
   /* File Inclusion */
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ],
-  "files": [
-    "./declarations.d.ts"
-  ],
+  "include": ["**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"],
+  "files": ["./declarations.d.ts", "src/lib/dateUtils.ts"],
   "compilerOptions": {
     /* Basic Options */
     "isolatedModules": true,
     "jsx": "preserve",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "es2021",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "es2021", "esnext"],
     "allowImportingTsExtensions": true,
     "module": "esnext",
     "noEmit": true,
