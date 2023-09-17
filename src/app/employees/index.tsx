@@ -13,7 +13,12 @@ export function EmployeesProvider({
 }): React.ReactNode {
   const [employees, setEmployees] = useRecords<Employee>(
     React.useMemo(
-      () => query(collection(db, 'employees'), orderBy('name')),
+      () =>
+        query(
+          collection(db, 'employees'),
+          orderBy('isActive', 'desc'),
+          orderBy('name'),
+        ),
       [],
     ),
   );

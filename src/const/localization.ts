@@ -69,4 +69,40 @@ export const localization = dictionary({
     en: 'Error',
     uk: 'Помилка',
   },
+  viewNoun: {
+    en: 'View',
+    uk: 'Вигляд',
+  },
+  date: {
+    en: 'Date',
+    uk: 'Дата',
+  },
+  previous: {
+    en: 'Previous',
+    uk: 'Попередня',
+  },
+  next: {
+    en: 'Next',
+    uk: 'Наступна',
+  },
+  today: {
+    en: 'Today',
+    uk: 'Сьогодні',
+  },
+  week: {
+    en: 'Week',
+    uk: 'Тиждень',
+  },
+  month: {
+    en: 'Month',
+    uk: 'Місяць',
+  },
+  year: {
+    en: 'Year',
+    uk: 'Рік',
+  },
+  all: {
+    en: 'All',
+    uk: 'Всі',
+  },
 });

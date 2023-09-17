@@ -84,6 +84,6 @@ async function authenticate(auth: Auth): Promise<void> {
  * don't have permission
  */
 const isAllowedUser = async (): Promise<boolean> =>
-  getDoc(doc(db, 'auth-test', 'auth-test'))
+  getDoc(doc(db, 'employees', 'auth-test'))
     .then(() => true)
     .catch(() => false);
