@@ -8,16 +8,22 @@ import { Submit } from '../Atoms/Submit';
 import { Table } from '../Atoms/Table';
 import { localization } from '../const/localization';
 import { loading } from '../Molecules/Loading';
-import { useEmployees } from './useEmployees';
+import { EmployeesContext, EmployeesSaveContext } from '.';
+import React from 'react';
 
 export default function Employees(): JSX.Element {
-  const { employees, setEmployees, save } = useEmployees();
+  const globalEmployees = React.useContext(EmployeesContext)!;
+  const saveEmployees = React.useContext(EmployeesSaveContext);
+  const [employees, setEmployees] = React.useState(globalEmployees);
+
   const router = useRouter();
   return (
     <>
       <H1>{localization.editEmployees}</H1>
       <Form
-        onSubmit={(): void => loading(save().then(() => router.push('../')))}
+        onSubmit={(): void =>
+          loading(saveEmployees(employees).then(() => router.push('../')))
+        }
         className="flex-1"
       >
         <Table.Container className="grid-cols-[repeat(4,auto),min-content] gap-2">
@@ -42,8 +48,8 @@ export default function Employees(): JSX.Element {
         <div className="flex flex-wrap gap-2">
           <Button.Info>{localization.addEmployee}</Button.Info>
           <span className="-ml-2 flex-1" />
-          <Submit.Success>{localization.save}</Submit.Success>
           <Link.Danger href="../">{localization.cancel}</Link.Danger>
+          <Submit.Success>{localization.save}</Submit.Success>
         </div>
       </Form>
     </>
