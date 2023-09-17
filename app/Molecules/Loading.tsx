@@ -2,6 +2,7 @@ import React from 'react';
 import { RA } from '../lib/types';
 import { localization } from '../const/localization';
 import { Dialog } from './Dialog';
+import { flippedPromise } from '../lib/promise';
 
 export const loading = (promise: Promise<unknown>): void => handler?.(promise);
 
@@ -23,7 +24,7 @@ export function LoadingProvider(): JSX.Element | null {
         })
         .catch(console.error);
     },
-    []
+    [],
   );
   handler = loadingHandler;
 
@@ -36,4 +37,13 @@ export function LoadingProvider(): JSX.Element | null {
       {localization.loading}
     </Dialog>
   ) : null;
+}
+
+export function LoadingBar(): null {
+  React.useLayoutEffect(() => {
+    const promise = flippedPromise();
+    loading(promise);
+    return (): void => promise.resolve();
+  }, []);
+  return null;
 }
