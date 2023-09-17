@@ -1,6 +1,31 @@
 import { f } from '../../lib/functools';
+import { useTriggerState } from '../Hooks/useTriggerState';
 import { className } from './className';
 import { wrap } from './wrap';
+
+const InputNumber = wrap<
+  'input',
+  {
+    readonly value: number | '';
+    readonly onValueChange?: (value: number | undefined) => void;
+    readonly type?: never;
+    readonly children?: undefined;
+  }
+>(
+  'Input.Number',
+  'input',
+  `${className.input} w-full`,
+  ({ onValueChange: handleValueChange, ...props }) => ({
+    ...props,
+    type: 'number',
+    onChange(event): void {
+      handleValueChange?.(
+        f.parseFloat((event.target as HTMLInputElement).value),
+      );
+      props.onChange?.(event);
+    },
+  }),
+);
 
 export const Input = {
   Checkbox: wrap<
@@ -46,26 +71,21 @@ export const Input = {
       },
     }),
   ),
-  Number: wrap<
-    'input',
-    {
-      readonly onValueChange?: (value: number | undefined) => void;
-      readonly type?: never;
-      readonly children?: undefined;
-    }
-  >(
-    'Input.Number',
-    'input',
-    `${className.input} w-full`,
-    ({ onValueChange: handleValueChange, ...props }) => ({
-      ...props,
-      type: 'number',
-      onChange(event): void {
-        handleValueChange?.(
-          f.parseFloat((event.target as HTMLInputElement).value),
-        );
-        props.onChange?.(event);
-      },
-    }),
-  ),
+  Number({
+    onValueChange: handleValueChange,
+    value,
+    ...props
+  }: Parameters<typeof InputNumber>[0]): JSX.Element {
+    const [localValue, setValue] = useTriggerState(value);
+    return (
+      <InputNumber
+        value={localValue}
+        onValueChange={(value): void => {
+          setValue(value ?? '');
+          if (value !== undefined) handleValueChange?.(value);
+        }}
+        {...props}
+      />
+    );
+  },
 };

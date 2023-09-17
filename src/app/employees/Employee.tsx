@@ -25,7 +25,7 @@ export function Employee({
         <Input.Number
           aria-label={localization.incomeShare}
           value={employee.revenueSharePercentage}
-          onValueChange={(revenueSharePercentage = 0): void =>
+          onValueChange={(revenueSharePercentage): void =>
             handleChange({ ...employee, revenueSharePercentage })
           }
           min={0}
@@ -36,7 +36,7 @@ export function Employee({
         <Input.Number
           aria-label={localization.baseSalary}
           value={employee.baseSalary}
-          onValueChange={(baseSalary = 0): void =>
+          onValueChange={(baseSalary): void =>
             handleChange({ ...employee, baseSalary })
           }
           min={0}

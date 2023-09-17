@@ -9,7 +9,11 @@ import { wrap } from './wrap';
  * There is much more flexibility in how columns should be sized.
  */
 export const Table = {
-  Container: wrap('Table.Container', 'table', 'grid overflow-auto'),
+  Container: wrap(
+    'Table.Container',
+    'table',
+    'grid overflow-auto flex-1 content-baseline',
+  ),
   Head: wrap('Table.Head', 'thead', 'contents'),
   Body: wrap('Table.Body', 'tbody', 'contents'),
   Row: wrap('Table.Row', 'tr', 'contents'),
