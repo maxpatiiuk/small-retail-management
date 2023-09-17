@@ -13,9 +13,6 @@ import {
 import { db } from '../../lib/firestore';
 import { error } from '../../lib/utils';
 
-// FIXME: remove
-const debug = true;
-
 export function useRecords<T extends { readonly id?: string }>(
   query: Query,
 ): readonly [RA<T> | undefined, (newValue: RA<T>) => Promise<void>] {
@@ -27,12 +24,9 @@ export function useRecords<T extends { readonly id?: string }>(
 
   React.useEffect(() => {
     setRecords(undefined);
-    debug && console.log('Fetching records');
     return onSnapshot(
       query,
-      (snapshot) => (
-        setRecords(snapshot.docs), debug && console.log(snapshot.docs)
-      ),
+      (snapshot) => setRecords(snapshot.docs),
       console.error,
     );
   }, [query]);
@@ -83,16 +77,6 @@ export function useRecords<T extends { readonly id?: string }>(
             record as UpdateData<Omit<T, 'id'>>,
           ),
         );
-
-        debug &&
-          console.log('Updating records', {
-            records,
-            newRecords,
-            newIds,
-            removedRecords,
-            modifiedRecords,
-            preservedRecords,
-          });
 
         return Promise.all([
           ...removePromises,

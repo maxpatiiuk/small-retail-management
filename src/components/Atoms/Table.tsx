@@ -17,6 +17,10 @@ export const Table = {
   Head: wrap('Table.Head', 'thead', 'contents'),
   Body: wrap('Table.Body', 'tbody', 'contents'),
   Row: wrap('Table.Row', 'tr', 'contents'),
-  Header: wrap('Table.Header', 'th', 'bg-white flex items-center gap-1'),
+  Header: wrap(
+    'Table.Header',
+    'th',
+    'bg-white flex items-center gap-1 top-0 sticky',
+  ),
   Cell: wrap('Table.Cell', 'td', 'flex items-center gap-1'),
 };

@@ -57,7 +57,8 @@ export const dateUtils = {
 } as const;
 
 /** Adapted from https://weeknumber.com/how-to/javascript */
-function getWeek(date: Date): number {
+function getWeek(rawDate: Date): number {
+  const date = new Date(rawDate);
   date.setHours(0, 0, 0, 0);
   // Thursday in current week decides the year.
   date.setDate(date.getDate() + 3 - ((date.getDay() + 6) % 7));

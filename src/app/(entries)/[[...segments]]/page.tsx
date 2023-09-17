@@ -10,6 +10,8 @@ import { View, useSegments } from './useSegments';
 import { RA } from '../../../lib/types';
 import { useRouter } from 'next/navigation';
 import { useNeighboringDates } from './useNeighboringDates';
+import { ColumnsContent } from '../../../components/WeekDay/ColumnsContent';
+import { useToday } from '../../../components/Hooks/useToday';
 
 export default function MainPage({
   params: { segments },
@@ -22,7 +24,7 @@ export default function MainPage({
       <header className="flex gap-2">
         <H1>{localization.siteTitle}</H1>
         <span className="-ml-2 flex-1" />
-        <Link.Info href="./employees">{localization.editEmployees}</Link.Info>
+        <Link.Info href="/employees">{localization.editEmployees}</Link.Info>
       </header>
       <section className="flex flex-wrap gap-4 sm:gap-8 p-2 rounded bg-gray-200">
         <ViewSelect view={view} date={date} getUrl={getUrl} />
@@ -30,7 +32,11 @@ export default function MainPage({
           <DateSelect view={view} date={date} getUrl={getUrl} />
         )}
       </section>
-      <main className=""></main>
+      <main className="flex-1 flex flex-col gap-2 overflow-hidden">
+        {view === 'day' || view === 'week' ? (
+          <ColumnsContent date={date} view={view} />
+        ) : undefined}
+      </main>
     </>
   );
 }
@@ -83,11 +89,14 @@ function DateSelect({
 }): JSX.Element {
   const navigate = useRouter();
   const { previousDate, nextDate } = useNeighboringDates(view, date);
+  const today = useToday();
   return (
     <aside>
       <h2>{localization.date}</h2>
       <div className="flex gap-1 items-center">
-        <Link.Success href="">{localization.today}</Link.Success>
+        <Link.Success href={getUrl(view, today)}>
+          {localization.today}
+        </Link.Success>
         <Link.Info
           href={getUrl(view, previousDate)}
           aria-label={localization.previous}

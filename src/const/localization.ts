@@ -109,4 +109,8 @@ export const localization = dictionary({
     en: 'All',
     uk: 'Всі',
   },
+  employee: {
+    en: 'Employee',
+    uk: 'Продавець',
+  },
 });
