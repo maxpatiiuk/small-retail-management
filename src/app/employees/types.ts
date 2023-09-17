@@ -2,6 +2,6 @@ export type Employee = {
   readonly id?: string;
   readonly name: string;
   readonly isActive: boolean;
-  readonly baseIncome: number;
+  readonly baseSalary: number;
   readonly revenueSharePercentage: number;
 };

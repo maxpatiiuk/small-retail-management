@@ -61,7 +61,7 @@ export const localization = dictionary({
     en: 'Base salary',
     uk: 'Базова зарплата',
   },
-  visible: {
+  isActive: {
     en: 'Visible',
     uk: 'Показувати',
   },

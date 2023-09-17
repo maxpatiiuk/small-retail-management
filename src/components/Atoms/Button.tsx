@@ -2,7 +2,13 @@ import { className } from './className';
 import { wrap } from './wrap';
 
 const makeButton = (name: string, extraClassName: string) =>
-  wrap(name, 'button', `${className.button} ${extraClassName}`, {
+  wrap<
+    'button',
+    {
+      // Make providing onClick mandatory
+      onClick: ((event: MouseEvent) => void) | undefined;
+    }
+  >(name, 'button', `${className.button} ${extraClassName}`, {
     type: 'button',
   });
 
