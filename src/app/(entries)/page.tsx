@@ -15,9 +15,9 @@ export default function MainPage(): JSX.Element {
         <span className="-ml-2 flex-1" />
         <Link.Info href="./employees">{localization.editEmployees}</Link.Info>
       </header>
-      <aside className="flex flex-wrap gap-4 sm:gap-8 p-2 rounded bg-gray-200">
-        <fieldset>
-          <legend>{localization.viewNoun}</legend>
+      <section className="flex flex-wrap gap-4 sm:gap-8 p-2 rounded bg-gray-200">
+        <aside>
+          <h2>{localization.viewNoun}</h2>
           <div className="flex gap-1">
             <Link.Info
               href=""
@@ -49,9 +49,9 @@ export default function MainPage(): JSX.Element {
               *
             </Link.Info>
           </div>
-        </fieldset>
-        <fieldset>
-          <legend>{localization.date}</legend>
+        </aside>
+        <aside>
+          <h2>{localization.date}</h2>
           <div className="flex gap-1 items-center">
             <Link.Success href="">{localization.today}</Link.Success>
             <Link.Info
@@ -70,8 +70,9 @@ export default function MainPage(): JSX.Element {
               {icons.chevronRight}
             </Link.Info>
           </div>
-        </fieldset>
-      </aside>
+        </aside>
+      </section>
+      <main className=""></main>
     </>
   );
 }
