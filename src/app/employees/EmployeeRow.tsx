@@ -4,7 +4,7 @@ import { Table } from '../../components/Atoms/Table';
 import { localization } from '../../const/localization';
 import { Employee } from './types';
 
-export function Employee({
+export function EmployeeRow({
   employee,
   onChange: handleChange,
 }: {
@@ -24,9 +24,9 @@ export function Employee({
       <Table.Cell>
         <Input.Number
           aria-label={localization.incomeShare}
-          value={employee.revenueSharePercentage}
-          onValueChange={(revenueSharePercentage): void =>
-            handleChange({ ...employee, revenueSharePercentage })
+          value={employee.incomeShare ?? ''}
+          onValueChange={(incomeShare): void =>
+            handleChange({ ...employee, incomeShare })
           }
           min={0}
           max={100}
@@ -35,7 +35,7 @@ export function Employee({
       <Table.Cell>
         <Input.Number
           aria-label={localization.baseSalary}
-          value={employee.baseSalary}
+          value={employee.baseSalary ?? ''}
           onValueChange={(baseSalary): void =>
             handleChange({ ...employee, baseSalary })
           }

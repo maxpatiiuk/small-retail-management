@@ -11,7 +11,8 @@ import { loading } from '../../components/Molecules/Loading';
 import { EmployeesContext, EmployeesSaveContext } from '.';
 import React from 'react';
 import { removeItem, replaceItem } from '../../lib/utils';
-import { Employee } from './Employee';
+import { EmployeeRow } from './EmployeeRow';
+import type { Employee } from './types';
 
 export default function Employees(): JSX.Element {
   const globalEmployees = React.useContext(EmployeesContext)!;
@@ -24,7 +25,11 @@ export default function Employees(): JSX.Element {
       <H1>{localization.editEmployees}</H1>
       <Form
         onSubmit={(): void =>
-          loading(saveEmployees(employees).then(() => router.push('../')))
+          loading(
+            saveEmployees(employees.map(normalize)).then(() =>
+              router.push('../'),
+            ),
+          )
         }
         className="flex-1 overflow-hidden"
       >
@@ -32,7 +37,7 @@ export default function Employees(): JSX.Element {
           <TableHeader />
           <Table.Body>
             {employees.map((employee, index) => (
-              <Employee
+              <EmployeeRow
                 key={index}
                 employee={employee}
                 onChange={(employee): void =>
@@ -53,7 +58,7 @@ export default function Employees(): JSX.Element {
                 ...employees,
                 {
                   name: '',
-                  revenueSharePercentage: 0,
+                  incomeShare: 0,
                   baseSalary: 0,
                   isActive: true,
                 },
@@ -83,3 +88,13 @@ function TableHeader(): JSX.Element {
     </Table.Head>
   );
 }
+
+const normalize = ({
+  incomeShare = 0,
+  baseSalary = 0,
+  ...rest
+}: Employee): Employee => ({
+  incomeShare,
+  baseSalary,
+  ...rest,
+});
