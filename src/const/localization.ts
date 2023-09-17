@@ -53,8 +53,8 @@ export const localization = dictionary({
     en: 'Name',
     uk: "Ім'я",
   },
-  salaryPercentage: {
-    en: 'Salary percentage',
+  incomeShare: {
+    en: 'Income share',
     uk: 'Відсоток зарплати',
   },
   baseSalary: {

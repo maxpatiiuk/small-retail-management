@@ -13,6 +13,7 @@ import { State } from 'typesafe-reducer';
 import { localization } from '../../const/localization';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../lib/firestore';
+import { Button } from '../Atoms/Button';
 
 const auth = getAuth(app);
 auth.useDeviceLanguage();
@@ -61,12 +62,12 @@ export function Auth({
 
   return state.type === 'SignedIn' ? (
     children
-  ) : state.type === 'Loading' || auth === undefined ? (
-    <>{localization.loading}</>
-  ) : (
+  ) : state.type === 'Loading' || auth === undefined ? undefined : (
     <>
       {typeof state.error === 'string' && <p role="alert">{state.error}</p>}
-      <button onClick={signIn}>{localization.signIn}</button>
+      <div>
+        <Button.Info onClick={signIn}>{localization.signIn}</Button.Info>
+      </div>
     </>
   );
 }

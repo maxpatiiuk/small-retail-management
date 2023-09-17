@@ -18,11 +18,12 @@ export function Employee({
           aria-label={localization.name}
           value={employee.name}
           onValueChange={(name): void => handleChange({ ...employee, name })}
+          required
         />
       </Table.Cell>
       <Table.Cell>
         <Input.Number
-          aria-label={localization.salaryPercentage}
+          aria-label={localization.incomeShare}
           value={employee.revenueSharePercentage}
           onValueChange={(revenueSharePercentage = 0): void =>
             handleChange({ ...employee, revenueSharePercentage })
@@ -50,11 +51,11 @@ export function Employee({
             handleChange({ ...employee, isActive })
           }
         />
-      </Table.Cell>
-      <Table.Cell>
-        <Button.Danger onClick={(): void => handleChange(undefined)}>
-          {localization.delete}
-        </Button.Danger>
+        {process.env.NODE_ENV === 'development' && (
+          <Button.Danger onClick={(): void => handleChange(undefined)}>
+            {localization.delete}
+          </Button.Danger>
+        )}
       </Table.Cell>
     </Table.Row>
   );

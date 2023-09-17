@@ -1,5 +1,5 @@
 import React from 'react';
-import type { RA } from '../../lib/types';
+import type { IR, RA } from '../../lib/types';
 import {
   deleteDoc,
   onSnapshot,
@@ -7,8 +7,11 @@ import {
   type Query,
   addDoc,
   collection,
+  updateDoc,
+  type UpdateData,
 } from 'firebase/firestore';
 import { db } from '../../lib/firestore';
+import { error } from '../../lib/utils';
 
 // FIXME: remove
 const debug = true;
@@ -20,8 +23,7 @@ export function useRecords<T extends { readonly id?: string }>(
     RA<QueryDocumentSnapshot> | undefined
   >(undefined);
 
-  if (!('path' in query) || typeof query.path !== 'string')
-    throw new Error("Can't resolve path from query");
+  const collectionName = useUnsafeCollectionName(query);
 
   React.useEffect(() => {
     setRecords(undefined);
@@ -61,18 +63,25 @@ export function useRecords<T extends { readonly id?: string }>(
         // Created added
         const newRecords = newData.filter((record) => record.id === undefined);
         const addPromises = newRecords.map((record) =>
-          addDoc(collection(db, query.path as string), record),
+          addDoc(collection(db, collectionName), record),
         );
 
         // Modify updated
-        const modifiedRecords = newData.filter(
+        const preservedRecords = newData.filter(
           (record) => record.id !== undefined,
         );
         const indexedRecords = Object.fromEntries(
           records.map((record) => [record.id, record]),
         );
-        const updatePromises = modifiedRecords.map(
-          (record) => indexedRecords[record.id]?.ref.update(record),
+        const modifiedRecords = preservedRecords.filter(
+          (record) =>
+            normalize(indexedRecords[record.id]?.data()) !== normalize(record),
+        );
+        const updatePromises = modifiedRecords.map(({ id, ...record }) =>
+          updateDoc(
+            indexedRecords[id]?.ref,
+            record as UpdateData<Omit<T, 'id'>>,
+          ),
         );
 
         debug &&
@@ -82,6 +91,7 @@ export function useRecords<T extends { readonly id?: string }>(
             newIds,
             removedRecords,
             modifiedRecords,
+            preservedRecords,
           });
 
         return Promise.all([
@@ -90,7 +100,40 @@ export function useRecords<T extends { readonly id?: string }>(
           ...updatePromises,
         ]).then(() => undefined);
       },
-      [records, query],
+      [records, query, collectionName],
     ),
   ];
 }
+
+function useUnsafeCollectionName(query: Query): string {
+  return React.useMemo(
+    () =>
+      getCollectionName(query) ??
+      error("Can't resolve collection name from query"),
+    [],
+  );
+}
+
+/*
+ * Trying to access private query._query.path.segments[0] without type
+ * assertions
+ */
+function getCollectionName(query: Query): string | undefined {
+  if (!('_query' in query)) return undefined;
+  const internalQuery = query._query ?? undefined;
+  if (typeof internalQuery !== 'object' || !('path' in internalQuery))
+    return undefined;
+  const path = internalQuery.path ?? undefined;
+  if (typeof path !== 'object' || !('segments' in path)) return undefined;
+  const segments = path.segments;
+  return Array.isArray(segments) &&
+    segments.length === 1 &&
+    typeof segments[0] === 'string'
+    ? segments[0]
+    : undefined;
+}
+
+const normalize = ({ id: _, ...data }: IR<unknown>) =>
+  JSON.stringify(
+    Object.entries(data).sort(([left], [right]) => left.localeCompare(right)),
+  );

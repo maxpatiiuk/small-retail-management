@@ -18,7 +18,6 @@ export default function Employees(): JSX.Element {
   const saveEmployees = React.useContext(EmployeesSaveContext);
   const [employees, setEmployees] = React.useState(globalEmployees);
 
-  // FIXME: if trying to delete an employee with data, hide it instead
   const router = useRouter();
   return (
     <>
@@ -29,7 +28,7 @@ export default function Employees(): JSX.Element {
         }
         className="flex-1"
       >
-        <Table.Container className="grid-cols-[repeat(4,auto),min-content] gap-2">
+        <Table.Container className="grid-cols-[repeat(4,auto)] gap-1 sm:gap-2">
           <TableHeader />
           <Table.Body>
             {employees.map((employee, index) => (
@@ -78,12 +77,9 @@ function TableHeader(): JSX.Element {
     <Table.Head>
       <Table.Row>
         <Table.Header scope="col">{localization.name}</Table.Header>
-        <Table.Header scope="col">{localization.salaryPercentage}</Table.Header>
+        <Table.Header scope="col">{localization.incomeShare}</Table.Header>
         <Table.Header scope="col">{localization.baseSalary}</Table.Header>
         <Table.Header scope="col">{localization.isActive}</Table.Header>
-        <Table.Header scope="col">
-          <span className="sr-only">{localization.delete}</span>
-        </Table.Header>
       </Table.Row>
     </Table.Head>
   );

@@ -1,4 +1,5 @@
 import { f } from '../../lib/functools';
+import { className } from './className';
 import { wrap } from './wrap';
 
 export const Input = {
@@ -13,7 +14,7 @@ export const Input = {
   >(
     'Input.Checkbox',
     'input',
-    'rounded-xs',
+    `rounded-sm`,
     ({ onValueChange: handleValueChange, readOnly, ...props }) => ({
       ...props,
       type: 'checkbox',
@@ -35,7 +36,7 @@ export const Input = {
   >(
     'Input.Text',
     'input',
-    'w-full',
+    `${className.input} w-full`,
     ({ onValueChange: handleChange, ...props }) => ({
       ...props,
       type: 'text',
@@ -55,7 +56,7 @@ export const Input = {
   >(
     'Input.Number',
     'input',
-    'w-full',
+    `${className.input} w-full`,
     ({ onValueChange: handleValueChange, ...props }) => ({
       ...props,
       type: 'number',
