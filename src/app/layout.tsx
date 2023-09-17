@@ -4,7 +4,7 @@ import 'tailwindcss/tailwind.css';
 
 import React from 'react';
 import { ServiceWorker } from '../components/Molecules/ServiceWorker';
-import { detectLanguage } from '../lib/localization';
+import { getLanguage } from '../lib/localization';
 import { localization } from '../const/localization';
 import { themeColor } from '../const/siteConfig';
 import { Auth } from '../components/Molecules/Auth';
@@ -17,11 +17,8 @@ export default function RootLayout({
 }: {
   readonly children: React.ReactNode;
 }): JSX.Element {
-  // Set locale even before app is rendered (useEffect may be too late)
-  const locale = detectLanguage();
-
   return (
-    <html lang={locale}>
+    <html lang={getLanguage()}>
       <head>
         <meta
           name="viewport"

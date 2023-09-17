@@ -6,17 +6,18 @@ type Language = (typeof languages)[number];
 let language: Language = 'en';
 let detectedLanguage = false;
 
-export function detectLanguage(): Language {
-  if (detectedLanguage) return language;
+export const getLanguage = (): Language =>
+  detectedLanguage ? language : resolveLanguage();
 
+function resolveLanguage(): Language {
   const parsedLanguage = mappedFind(
     globalThis.navigator?.languages ?? [],
     (userLanguage) =>
       languages.find(
         (appLanguage) =>
           userLanguage.startsWith(appLanguage) ||
-          appLanguage.startsWith(userLanguage)
-      )
+          appLanguage.startsWith(userLanguage),
+      ),
   );
 
   detectedLanguage = true;
@@ -28,9 +29,9 @@ export function detectLanguage(): Language {
  * A tiny localization lib
  */
 export const dictionary = <
-  T extends IR<RR<Language, string | ((...args: RA<never>) => string)>>
+  T extends IR<RR<Language, string | ((...args: RA<never>) => string)>>,
 >(
-  dictionary: T
+  dictionary: T,
 ): {
   readonly [KEY in keyof T]: T[KEY][Language];
 } =>
@@ -41,7 +42,7 @@ export const dictionary = <
     {
       get: (target, key) =>
         typeof key === 'string'
-          ? dictionary[key]?.[language] ?? target[key]
+          ? dictionary[key]?.[getLanguage()] ?? target[key]
           : undefined,
-    }
+    },
   );
