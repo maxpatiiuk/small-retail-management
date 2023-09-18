@@ -2,8 +2,13 @@ import { IR, RA, RR } from './types';
 import { mappedFind } from './utils';
 
 const languages = ['en', 'uk'] as const;
-type Language = (typeof languages)[number];
 let language: Language = 'en';
+export const currencies: RR<Language, string> = {
+  en: 'USD',
+  uk: 'UAH',
+};
+
+type Language = (typeof languages)[number];
 let detectedLanguage = false;
 
 export const getLanguage = (): Language =>

@@ -113,4 +113,20 @@ export const localization = dictionary({
     en: 'Employee',
     uk: 'Продавець',
   },
+  clickToEdit: {
+    en: 'Click to edit',
+    uk: 'Натисніть щоб редагувати',
+  },
+  revenue: {
+    en: 'Revenue',
+    uk: 'Виручка',
+  },
+  expenses: {
+    en: 'Expenses',
+    uk: 'Видано',
+  },
+  salary: {
+    en: 'Salary',
+    uk: 'Зарплата',
+  },
 });

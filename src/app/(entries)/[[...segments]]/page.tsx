@@ -14,9 +14,9 @@ import { ColumnsContent } from '../../../components/WeekDay/ColumnsContent';
 import { useToday } from '../../../components/Hooks/useToday';
 
 export default function MainPage({
-  params: { segments },
+  params: { segments = [] },
 }: {
-  readonly params: { readonly segments: RA<string> };
+  readonly params: { readonly segments?: RA<string> };
 }): JSX.Element {
   const { date, view, getUrl } = useSegments(segments);
   return (

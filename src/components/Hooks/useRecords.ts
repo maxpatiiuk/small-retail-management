@@ -12,6 +12,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../../lib/firestore';
 import { error } from '../../lib/utils';
+import { SECOND } from '../Atoms/timeUnits';
 
 export function useRecords<T extends { readonly id?: string }>(
   query: Query,
@@ -36,7 +37,16 @@ export function useRecords<T extends { readonly id?: string }>(
       () =>
         records?.map((doc) => ({
           id: doc.id,
-          ...(doc.data() as T),
+          ...(Object.fromEntries(
+            Object.entries(doc.data()).map(([key, value]) => [
+              key,
+              typeof value === 'object' &&
+              value !== null &&
+              typeof value.seconds === 'number'
+                ? new Date(value.seconds * SECOND)
+                : value,
+            ]),
+          ) as T),
         })),
       [records],
     ),
@@ -56,7 +66,7 @@ export function useRecords<T extends { readonly id?: string }>(
 
         // Created added
         const newRecords = newData.filter((record) => record.id === undefined);
-        const addPromises = newRecords.map((record) =>
+        const addPromises = newRecords.map(({ id: _, ...record }) =>
           addDoc(collection(db, collectionName), record),
         );
 

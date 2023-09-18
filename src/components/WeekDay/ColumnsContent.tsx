@@ -9,8 +9,7 @@ import { useToday } from '../Hooks/useToday';
 import { ColumnsEdit } from './ColumnsEdit';
 import { Form } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { useColumnData } from './useColumnData';
-import { EmployeesContext } from '../../app/employees';
+import { useColumnsData } from './useColumnsData';
 import { Submit } from '../Atoms/Submit';
 import { LoadingBar, loading } from '../Molecules/Loading';
 
@@ -25,27 +24,29 @@ export function ColumnsContent({
   const weekDays = useWeekDays(daysCount, date);
 
   const {
-    columnData,
-    setColumnData,
+    columnsData,
+    setColumnsData,
     onReset: handleReset,
     onSave: handleSave,
-  } = useColumnData(weekDays);
+  } = useColumnsData(weekDays);
 
-  return columnData === undefined ? (
+  return columnsData === undefined ? (
     <LoadingBar />
   ) : (
-    <Form
-      className="flex flex-col gap-2"
-      onSubmit={(): void => loading(handleSave)}
-    >
+    <Form className="contents" onSubmit={(): void => loading(handleSave())}>
       <Table.Container
-        className="grid-cols-[auto,repeat(var(--days-count),auto)] [&_:is(th,td)]:p-1 [&_:is(th,td)]:sm:p-2"
+        className={`
+          grid-cols-[auto,repeat(var(--days-count),minmax(6rem,1fr))]
+          [&_:is(th,td)]:p-1 [&_:is(th,td)]:sm:p-2 [&_:is(th,td)]:ring-1
+          [&_:is(th,td)]:ring-gray-300
+          [&_tr:nth-child(even)_:is(th,td)]:bg-gray-200
+        `}
         style={{ '--days-count': daysCount } as React.CSSProperties}
       >
         <TableHeader weekDays={weekDays} />
-        <ColumnsEdit weekDays={weekDays} />
+        <ColumnsEdit columnsData={columnsData} onChange={setColumnsData} />
       </Table.Container>
-      <div className="flex gap-2 items-between">
+      <div className="flex gap-2 justify-between">
         <Button.Danger onClick={handleReset}>
           {localization.cancel}
         </Button.Danger>
@@ -98,7 +99,7 @@ function TableHeader({
           <Table.Header
             key={index}
             scope="col"
-            className={isToday ? 'bg-green-100' : 'bg-white'}
+            className={isToday ? '!bg-green-100' : 'bg-white'}
           >
             {weekDay}
           </Table.Header>

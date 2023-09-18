@@ -13,13 +13,13 @@ export const Form = wrap(
             handleSubmit(event);
           }
         : undefined,
-  })
+  }),
 );
 
 export const Centered = wrap(
   'Centered',
   'div',
-  'flex items-center gap-4 justify-center w-screen h-screen text-center'
+  'flex items-center flex-col gap-4 justify-center w-screen h-screen text-center',
 );
 
 export const H1 = wrap('H1', 'h1', 'text-4xl font-bold');

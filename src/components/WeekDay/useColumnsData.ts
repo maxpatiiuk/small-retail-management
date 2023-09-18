@@ -10,36 +10,36 @@ import { useLiveState } from '../Hooks/useLiveState';
 import { Employee } from '../../app/employees/types';
 import { error } from '../../lib/utils';
 
-export function useColumnData(weekDays: RA<WeekDay>): {
-  readonly columnData: RA<ColumnsData> | undefined;
-  readonly setColumnData: (value: RA<ColumnsData>) => void;
+export function useColumnsData(weekDays: RA<WeekDay>): {
+  readonly columnsData: RA<ColumnsData> | undefined;
+  readonly setColumnsData: (value: RA<ColumnsData>) => void;
   readonly onReset: () => void;
   readonly onSave: () => Promise<void>;
 } {
   const employees = React.useContext(EmployeesContext);
-  const [remoteColumnData, setRemoteColumnData] = useRemoteData(weekDays);
-  const getColumnData = React.useCallback(
+  const [remoteColumnsData, setRemoteColumnsData] = useRemoteData(weekDays);
+  const getColumnsData = React.useCallback(
     () =>
-      employees === undefined || remoteColumnData === undefined
+      employees === undefined || remoteColumnsData === undefined
         ? undefined
-        : indexColumnData(remoteColumnData, employees, weekDays),
-    [weekDays, employees, remoteColumnData],
+        : indexColumnsData(remoteColumnsData, employees, weekDays),
+    [weekDays, employees, remoteColumnsData],
   );
-  const [columnData, setColumnData] = useLiveState(getColumnData);
+  const [columnsData, setColumnsData] = useLiveState(getColumnsData);
 
   return {
-    columnData,
-    setColumnData,
+    columnsData,
+    setColumnsData,
     onReset: React.useCallback(
-      () => setColumnData(getColumnData),
-      [setColumnData, getColumnData],
+      () => setColumnsData(getColumnsData),
+      [setColumnsData, getColumnsData],
     ),
     onSave: React.useCallback(
       () =>
-        columnData === undefined
+        columnsData === undefined
           ? error("Column data hasn't not fetched yet")
-          : setRemoteColumnData(flattenColumnData(columnData)),
-      [setRemoteColumnData, columnData],
+          : setRemoteColumnsData(flattenColumnsData(columnsData)),
+      [setRemoteColumnsData, columnsData],
     ),
   };
 }
@@ -55,6 +55,7 @@ function useRemoteData(
     return nextDay;
   }, [weekDay]);
 
+  // FEAT: update the totals on save
   return useRecords<Entry>(
     React.useMemo(
       () =>
@@ -68,7 +69,7 @@ function useRemoteData(
   );
 }
 
-const indexColumnData = (
+const indexColumnsData = (
   remoteColumnData: RA<Entry>,
   employees: RA<Employee>,
   weekDays: RA<WeekDay>,
@@ -88,7 +89,7 @@ const indexColumnData = (
         employeeId: employee.id!,
         date: weekDay.date,
         revenue: 0,
-        productCost: 0,
+        expenses: 0,
       };
 
       return { weekDay, entry };
@@ -97,7 +98,7 @@ const indexColumnData = (
     return { employee, data };
   });
 
-type ColumnsData = {
+export type ColumnsData = {
   readonly employee: Employee;
   readonly data: RA<ColumnData>;
 };
@@ -107,7 +108,13 @@ type ColumnData = {
   readonly entry: Entry;
 };
 
-const flattenColumnData = (columnData: RA<ColumnsData>): RA<Entry> =>
+const flattenColumnsData = (columnData: RA<ColumnsData>): RA<Entry> =>
   columnData
-    .flatMap(({ data }) => data.map(({ entry }) => entry))
-    .filter((entry) => entry.revenue !== 0 || entry.productCost !== 0);
+    .flatMap(({ data }) =>
+      data.map(({ entry: { revenue = 0, expenses = 0, ...rest } }) => ({
+        revenue,
+        expenses,
+        ...rest,
+      })),
+    )
+    .filter((entry) => entry.revenue !== 0 || entry.expenses !== 0);

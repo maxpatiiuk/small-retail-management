@@ -1,4 +1,4 @@
-import { getLanguage } from '../../lib/localization';
+import { currencies, getLanguage } from '../../lib/localization';
 import { RA } from '../../lib/types';
 import { DAY, MONTH, WEEK, YEAR } from './timeUnits';
 
@@ -48,6 +48,21 @@ declare namespace Intl {
 
     public format(value: Readonly<Date>): string;
   }
+
+  class NumberFormat {
+    public constructor(
+      locales?: RA<string> | string,
+      options?: {
+        readonly style: 'currency';
+        readonly currency: string;
+        readonly currencyDisplay: 'narrowSymbol';
+        readonly roundingMode: 'halfEven';
+        readonly trailingZeroDisplay: 'stripIfInteger';
+      },
+    );
+
+    public format(value: number): string;
+  }
 }
 
 export function getFirstDayOfWeek(originalDate: Date): Date {
@@ -57,3 +72,13 @@ export function getFirstDayOfWeek(originalDate: Date): Date {
     date.getDate() - day + (locale.weekInfo.firstDay ? 0 : day == 0 ? -6 : 1);
   return new Date(date.setDate(difference));
 }
+
+const numberFormatter = new Intl.NumberFormat(getLanguage(), {
+  style: 'currency',
+  currency: currencies[getLanguage()],
+  currencyDisplay: 'narrowSymbol',
+  roundingMode: 'halfEven',
+  trailingZeroDisplay: 'stripIfInteger',
+});
+export const formatCurrency = (number: number): string =>
+  numberFormatter.format(number);
