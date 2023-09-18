@@ -15,7 +15,7 @@ import { error } from '../../lib/utils';
 
 export function useRecords<T extends { readonly id?: string }>(
   query: Query,
-): readonly [RA<T> | undefined, (newValue: RA<T>) => Promise<void>] {
+): readonly [RA<T> | undefined, (newItems: RA<T>) => Promise<void>] {
   const [records, setRecords] = React.useState<
     RA<QueryDocumentSnapshot> | undefined
   >(undefined);
