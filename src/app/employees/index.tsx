@@ -4,7 +4,8 @@ import { collection, orderBy, query } from 'firebase/firestore';
 import { db } from '../../lib/firestore';
 import { Employee } from './types';
 import { LoadingBar } from '../../components/Molecules/Loading';
-import { useRecords } from '../../components/Hooks/useRecords';
+import { Changelog, useRecords } from '../../components/Hooks/useRecords';
+import { error } from '../../lib/utils';
 
 export function EmployeesProvider({
   children,
@@ -38,5 +39,5 @@ export const EmployeesContext = React.createContext<RA<Employee>>([]);
 EmployeesContext.displayName = 'EmployeesContext';
 
 export const EmployeesSaveContext = React.createContext<
-  (employees: RA<Employee>) => Promise<void>
->(async () => console.error('Not defined'));
+  (employees: RA<Employee>) => Promise<Changelog<Employee>>
+>(async () => error('Not defined'));

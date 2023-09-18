@@ -14,76 +14,66 @@ import { db } from '../../lib/firestore';
 import { error } from '../../lib/utils';
 import { SECOND } from '../Atoms/timeUnits';
 
-export function useRecords<T extends { readonly id?: string }>(
+type BaseRecord = { readonly id?: string };
+
+export type Changelog<T extends BaseRecord> = {
+  readonly removed: RA<T>;
+  readonly added: RA<T>;
+  readonly updated: RA<{ readonly old: T; readonly new: T }>;
+};
+
+export function useRecords<T extends BaseRecord>(
   query: Query,
-): readonly [RA<T> | undefined, (newItems: RA<T>) => Promise<void>] {
-  const [records, setRecords] = React.useState<
+): readonly [RA<T> | undefined, (newItems: RA<T>) => Promise<Changelog<T>>] {
+  const [documents, setDocuments] = React.useState<
     RA<QueryDocumentSnapshot> | undefined
   >(undefined);
 
   const collectionName = useUnsafeCollectionName(query);
 
   React.useEffect(() => {
-    setRecords(undefined);
+    setDocuments(undefined);
     return onSnapshot(
       query,
-      (snapshot) => setRecords(snapshot.docs),
+      (snapshot) => setDocuments(snapshot.docs),
       console.error,
     );
   }, [query]);
 
   return [
-    React.useMemo(
-      () =>
-        records?.map((doc) => ({
-          id: doc.id,
-          ...(Object.fromEntries(
-            Object.entries(doc.data()).map(([key, value]) => [
-              key,
-              typeof value === 'object' &&
-              value !== null &&
-              typeof value.seconds === 'number'
-                ? new Date(value.seconds * SECOND)
-                : value,
-            ]),
-          ) as T),
-        })),
-      [records],
-    ),
+    React.useMemo(() => documents?.map(documentToData<T>), [documents]),
     React.useCallback(
-      async (newData) => {
-        if (records === undefined)
-          throw new Error("Can't modify records before first fetch");
+      async (updatedData) => {
+        if (documents === undefined)
+          throw new Error("Can't modify documents before first fetch");
 
         // Delete removed
-        const newIds = new Set(newData.map((record) => record.id));
-        const removedRecords = records.filter(
+        const newIds = new Set(updatedData.map(({ id }) => id));
+        const removedDocuments = documents.filter(
           (record) => !newIds.has(record.id),
         );
-        const removePromises = removedRecords.map((record) =>
-          deleteDoc(record.ref),
+        const removePromises = removedDocuments.map(({ ref }) =>
+          deleteDoc(ref),
         );
 
         // Created added
-        const newRecords = newData.filter((record) => record.id === undefined);
-        const addPromises = newRecords.map(({ id: _, ...record }) =>
-          addDoc(collection(db, collectionName), record),
+        const newData = updatedData.filter(({ id }) => id === undefined);
+        const addPromises = newData.map(({ id: _, ...data }) =>
+          addDoc(collection(db, collectionName), data),
         );
 
         // Modify updated
-        const preservedRecords = newData.filter(
-          (record) => record.id !== undefined,
+        const preservedData = updatedData.filter(({ id }) => id !== undefined);
+        const indexedDocuments = Object.fromEntries(
+          documents.map((document) => [document.id, document]),
         );
-        const indexedRecords = Object.fromEntries(
-          records.map((record) => [record.id, record]),
+        const modifiedData = preservedData.filter(
+          (data) =>
+            normalize(indexedDocuments[data.id]?.data()) !== normalize(data),
         );
-        const modifiedRecords = preservedRecords.filter(
-          (record) =>
-            normalize(indexedRecords[record.id]?.data()) !== normalize(record),
-        );
-        const updatePromises = modifiedRecords.map(({ id, ...record }) =>
+        const updatePromises = modifiedData.map(({ id, ...record }) =>
           updateDoc(
-            indexedRecords[id]?.ref,
+            indexedDocuments[id]?.ref,
             record as UpdateData<Omit<T, 'id'>>,
           ),
         );
@@ -92,9 +82,16 @@ export function useRecords<T extends { readonly id?: string }>(
           ...removePromises,
           ...addPromises,
           ...updatePromises,
-        ]).then(() => undefined);
+        ]).then(() => ({
+          removed: removedDocuments.map(documentToData<T>),
+          added: newData,
+          updated: modifiedData.map((record) => ({
+            old: documentToData(indexedDocuments[record.id]),
+            new: record,
+          })),
+        }));
       },
-      [records, query, collectionName],
+      [documents, query, collectionName],
     ),
   ];
 }
@@ -126,6 +123,22 @@ function getCollectionName(query: Query): string | undefined {
     ? segments[0]
     : undefined;
 }
+
+const documentToData = <T extends BaseRecord>(
+  document: QueryDocumentSnapshot,
+): T => ({
+  id: document.id,
+  ...(Object.fromEntries(
+    Object.entries(document.data()).map(([key, value]) => [
+      key,
+      typeof value === 'object' &&
+      value !== null &&
+      typeof value.seconds === 'number'
+        ? new Date(value.seconds * SECOND)
+        : value,
+    ]),
+  ) as T),
+});
 
 const normalize = ({ id: _, ...data }: IR<unknown>) =>
   JSON.stringify(

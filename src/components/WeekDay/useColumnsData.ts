@@ -3,12 +3,13 @@ import { RA } from '../../lib/types';
 import { WeekDay } from './ColumnsContent';
 import { collection, query, where } from 'firebase/firestore';
 import { db } from '../../lib/firestore';
-import { useRecords } from '../Hooks/useRecords';
+import { Changelog, useRecords } from '../Hooks/useRecords';
 import { Entry } from './types';
 import { EmployeesContext } from '../../app/employees';
 import { useLiveState } from '../Hooks/useLiveState';
 import { Employee } from '../../app/employees/types';
 import { error } from '../../lib/utils';
+import { syncAggregates } from './syncAggregates';
 
 export function useColumnsData(weekDays: RA<WeekDay>): {
   readonly columnsData: RA<ColumnsData> | undefined;
@@ -37,8 +38,10 @@ export function useColumnsData(weekDays: RA<WeekDay>): {
     onSave: React.useCallback(
       () =>
         columnsData === undefined
-          ? error("Column data hasn't not fetched yet")
-          : setRemoteColumnsData(flattenColumnsData(columnsData)),
+          ? error("Column data hasn't been fetched yet")
+          : setRemoteColumnsData(flattenColumnsData(columnsData)).then(
+              syncAggregates.bind(undefined, weekDays),
+            ),
       [setRemoteColumnsData, columnsData],
     ),
   };
@@ -46,7 +49,10 @@ export function useColumnsData(weekDays: RA<WeekDay>): {
 
 function useRemoteData(
   weekDay: RA<WeekDay>,
-): readonly [RA<Entry> | undefined, (newEntries: RA<Entry>) => Promise<void>] {
+): readonly [
+  RA<Entry> | undefined,
+  (newEntries: RA<Entry>) => Promise<Changelog<Entry>>,
+] {
   const firstDate = weekDay[0].date;
   const lastDate = React.useMemo(() => {
     const lastDate = weekDay.at(-1)!.date;
