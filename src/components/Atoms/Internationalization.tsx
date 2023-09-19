@@ -14,6 +14,7 @@ function getMonthNames(format: 'long' | 'short'): RA<string> {
 
 // Localized week day names
 export const weekDays = getWeekDays('long');
+export const shortWeekDays = getWeekDays('short');
 
 function getWeekDays(format: 'long' | 'short'): RA<string> {
   const weekDays = new Intl.DateTimeFormat(getLanguage(), { weekday: format });

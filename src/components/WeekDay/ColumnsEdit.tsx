@@ -62,10 +62,11 @@ function CellEdit({
   readonly onChange: (entry: Entry) => void;
 }): JSX.Element {
   const dateString = React.useMemo(() => date.toLocaleDateString(), [date]);
+  const isEmpty = entry.revenue === 0 && entry.expenses === 0;
   const [isManuallyOpen, setManuallyOpen] = useLiveState(
-    React.useCallback(() => false, [dateString]),
+    React.useCallback(() => !isEmpty, [dateString]),
   );
-  const isOpen = isManuallyOpen || entry.revenue !== 0 || entry.expenses !== 0;
+  const isOpen = isManuallyOpen || !isEmpty;
 
   return (
     <Table.Cell

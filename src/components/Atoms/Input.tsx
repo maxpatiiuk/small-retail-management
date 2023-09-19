@@ -186,7 +186,7 @@ export const Input = {
       />
     ) : (
       <InputText
-        value={value === 0 ? '' : formatted}
+        value={(value ?? 0) === 0 ? '' : formatted}
         onValueChange={() => console.error('Not supposed to be called')}
         {...rest}
         onFocus={(event): void => {

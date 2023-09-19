@@ -3,7 +3,12 @@ import { Table } from '../Atoms/Table';
 import { localization } from '../../const/localization';
 import { RA } from '../../lib/types';
 import { View } from '../../app/(entries)/[[...segments]]/useSegments';
-import { getFirstDayOfWeek, weekDays } from '../Atoms/Internationalization';
+import {
+  getFirstDayOfWeek,
+  months,
+  shortWeekDays,
+  weekDays,
+} from '../Atoms/Internationalization';
 import { DAY, WEEK } from '../Atoms/timeUnits';
 import { useToday } from '../Hooks/useToday';
 import { ColumnsEdit } from './ColumnsEdit';
@@ -39,7 +44,7 @@ export function ColumnsContent({
           grid-cols-[auto,repeat(var(--days-count),minmax(6rem,1fr))]
           [&_:is(th,td)]:p-1 [&_:is(th,td)]:sm:p-2 [&_:is(th,td)]:ring-1
           [&_:is(th,td)]:ring-gray-300
-          [&_tr:nth-child(even)_:is(th,td)]:bg-gray-200
+          [&_tr:nth-child(even)_:is(th,td)]:bg-gray-200 p-px
         `}
         style={{ '--days-count': daysCount } as React.CSSProperties}
       >
@@ -59,6 +64,7 @@ export function ColumnsContent({
 export type WeekDay = {
   readonly date: Date;
   readonly weekDay: string;
+  readonly shortWeekDay: string;
   readonly isToday: boolean;
 };
 
@@ -81,6 +87,7 @@ function useWeekDays(daysCount: number, currentDate: Date): RA<WeekDay> {
     return dates.map((date) => ({
       date,
       weekDay: weekDays[date.getDay()],
+      shortWeekDay: shortWeekDays[date.getDay()],
       isToday: todayString === date.toLocaleDateString(),
     }));
   }, [daysCount, currentDate, today]);
@@ -91,17 +98,26 @@ function TableHeader({
 }: {
   readonly weekDays: RA<WeekDay>;
 }): JSX.Element {
+  const dateLabel = React.useMemo(
+    () =>
+      Array.from(new Set(weekDays.map(({ date }) => date.getMonth())))
+        .map((monthIndex) => months[monthIndex])
+        .join(' - '),
+    [weekDays],
+  );
   return (
     <Table.Head>
       <Table.Row>
-        <Table.Header scope="col">{localization.employee}</Table.Header>
-        {weekDays.map(({ weekDay, isToday }, index) => (
+        <Table.Header scope="col">{dateLabel}</Table.Header>
+        {weekDays.map(({ weekDay, shortWeekDay, date, isToday }, index) => (
           <Table.Header
             key={index}
             scope="col"
             className={isToday ? '!bg-green-100' : 'bg-white'}
           >
-            {weekDay}
+            {`${date.getDate()}, `}
+            <span className="sm:hidden">{shortWeekDay}</span>
+            <span className="hidden sm:inline">{weekDay}</span>
           </Table.Header>
         ))}
       </Table.Row>
