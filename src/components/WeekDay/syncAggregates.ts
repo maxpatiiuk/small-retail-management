@@ -8,13 +8,13 @@
 import { db } from '../../lib/firestore';
 import { Changelog } from '../Hooks/useRecords';
 import { Entry } from './types';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { DocumentSnapshot, doc, getDoc, setDoc } from 'firebase/firestore';
 
 export const syncAggregates = async (changelog: Changelog<Entry>) =>
   applyDeltas(computeDeltas(changelog));
 
 type Deltas = Record<number, Record<number, Record<string, DeltaEntry>>>;
-type DeltaEntry = { revenue: number; expenses: number };
+export type DeltaEntry = { revenue: number; expenses: number };
 
 function computeDeltas(changelog: Changelog<Entry>): Deltas {
   const deltas: Deltas = {};
@@ -62,19 +62,10 @@ async function applyDeltas(deltas: Deltas): Promise<void> {
             yearSums[employeeId].revenue += revenue;
             yearSums[employeeId].expenses += expenses;
 
-            const docRef = doc(
-              db,
-              'monthSums',
-              year,
-              'month',
-              month,
-              'employee',
-              employeeId,
-            );
-            const document = await getDoc(docRef);
+            const document = await fetchMonthStat(year, month, employeeId);
             const data = document.data() as DeltaEntry | undefined;
 
-            await setDoc(docRef, {
+            await setDoc(document.ref, {
               revenue: (data?.revenue ?? 0) + revenue,
               expenses: (data?.expenses ?? 0) + expenses,
             });
@@ -85,11 +76,10 @@ async function applyDeltas(deltas: Deltas): Promise<void> {
 
     const yearPromises = Object.entries(yearSums).map(
       async ([employeeId, { revenue, expenses }]) => {
-        const docRef = doc(db, 'yearSums', year, 'employee', employeeId);
-        const document = await getDoc(docRef);
-        const data = document.data() as DeltaEntry | undefined;
+        const document = await fetchYearStat(year, employeeId);
+        const data = document.data();
 
-        await setDoc(docRef, {
+        await setDoc(document.ref, {
           revenue: (data?.revenue ?? 0) + revenue,
           expenses: (data?.expenses ?? 0) + expenses,
         });
@@ -100,4 +90,31 @@ async function applyDeltas(deltas: Deltas): Promise<void> {
   });
 
   await Promise.all(promises).then(() => undefined);
+}
+
+export async function fetchMonthStat(
+  year: string,
+  month: string,
+  employeeId: string,
+): Promise<DocumentSnapshot<DeltaEntry, DeltaEntry>> {
+  const docRef = doc(
+    db,
+    'monthSums',
+    year,
+    'month',
+    month,
+    'employee',
+    employeeId,
+  );
+  const document = await getDoc(docRef);
+  return document as DocumentSnapshot<DeltaEntry, DeltaEntry>;
+}
+
+export async function fetchYearStat(
+  year: string,
+  employeeId: string,
+): Promise<DocumentSnapshot<DeltaEntry, DeltaEntry>> {
+  const docRef = doc(db, 'yearSums', year, 'employee', employeeId);
+  const document = await getDoc(docRef);
+  return document as DocumentSnapshot<DeltaEntry, DeltaEntry>;
 }

@@ -10,6 +10,7 @@ import { localization } from '../../const/localization';
 import { Input } from '../Atoms/Input';
 import { Employee } from '../../app/employees/types';
 import { formatCurrency } from '../Atoms/Internationalization';
+import { computeSalary } from './statUtils';
 
 export function ColumnsEdit({
   columnsData,
@@ -22,9 +23,7 @@ export function ColumnsEdit({
     <Table.Body>
       {columnsData.map(({ employee, data }, employeeIndex) => (
         <Table.Row key={employeeIndex}>
-          <Table.Header className="left-0 sticky" scope="row">
-            {employee.name}
-          </Table.Header>
+          <Table.Header scope="row">{employee.name}</Table.Header>
           {data.map(({ weekDay, entry }, dayIndex) => (
             <CellEdit
               key={dayIndex}
@@ -126,6 +125,3 @@ function EntryEdit({
     </>
   );
 }
-
-const computeSalary = (employee: Employee, entry: Entry): number =>
-  (entry.revenue ?? 0) * (employee.incomeShare / 100);

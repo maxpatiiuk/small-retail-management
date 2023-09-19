@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { useNeighboringDates } from './useNeighboringDates';
 import { ColumnsContent } from '../../../components/WeekDay/ColumnsContent';
 import { useToday } from '../../../components/Hooks/useToday';
+import { MonthStats } from '../../../components/Stats/MonthStats';
 
 export default function MainPage({
   params: { segments = [] },
@@ -32,10 +33,14 @@ export default function MainPage({
           <DateSelect view={view} date={date} getUrl={getUrl} />
         )}
       </section>
-      <main className="flex-1 flex flex-col gap-2 overflow-hidden">
+      <main className="flex-1 flex flex-col gap-2 sm:gap-4 overflow-hidden">
         {view === 'day' || view === 'week' ? (
           <ColumnsContent date={date} view={view} />
-        ) : undefined}
+        ) : view === 'month' ? (
+          <MonthStats date={date} />
+        ) : // FEATURE: year stats
+        // FEATURE: all year stats
+        undefined}
       </main>
     </>
   );

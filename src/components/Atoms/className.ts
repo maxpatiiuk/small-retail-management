@@ -7,4 +7,8 @@ export const className = {
   info: 'bg-blue-600 hover:bg-blue-700',
   link: `inline-flex justify-center items-center text-blue-400 transition
   hover:text-black ${current}`,
+  strippedTable: `grid-cols-[auto,repeat(var(--column-count),minmax(6rem,1fr))]
+    [&_:is(th,td)]:p-1 [&_:is(th,td)]:sm:p-2 [&_:is(th,td)]:ring-1
+    [&_:is(th,td)]:ring-gray-300
+    [&_tr:nth-child(even)_:is(th,td)]:bg-gray-200 p-px`,
 };

@@ -17,6 +17,7 @@ import { Button } from '../Atoms/Button';
 import { useColumnsData } from './useColumnsData';
 import { Submit } from '../Atoms/Submit';
 import { LoadingBar, loading } from '../Molecules/Loading';
+import { className } from '../Atoms/className';
 
 export function ColumnsContent({
   view,
@@ -40,13 +41,8 @@ export function ColumnsContent({
   ) : (
     <Form className="contents" onSubmit={(): void => loading(handleSave())}>
       <Table.Container
-        className={`
-          grid-cols-[auto,repeat(var(--days-count),minmax(6rem,1fr))]
-          [&_:is(th,td)]:p-1 [&_:is(th,td)]:sm:p-2 [&_:is(th,td)]:ring-1
-          [&_:is(th,td)]:ring-gray-300
-          [&_tr:nth-child(even)_:is(th,td)]:bg-gray-200 p-px
-        `}
-        style={{ '--days-count': daysCount } as React.CSSProperties}
+        className={className.strippedTable}
+        style={{ '--column-count': daysCount } as React.CSSProperties}
       >
         <TableHeader weekDays={weekDays} />
         <ColumnsEdit columnsData={columnsData} onChange={setColumnsData} />

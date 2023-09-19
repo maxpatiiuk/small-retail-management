@@ -38,7 +38,7 @@ export const dateUtils = {
     format: (date: Date): string =>
       [
         date.getFullYear(),
-        (date.getMonth() + 1).toString().padEnd(2, '0'),
+        (date.getMonth() + 1).toString().padStart(2, '0'),
       ].join('-'),
     parse(monthString: string): Date | undefined {
       const [year, month] = monthString.split('-').map(f.parseInt);

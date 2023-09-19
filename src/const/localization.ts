@@ -129,4 +129,8 @@ export const localization = dictionary({
     en: 'Salary',
     uk: 'Зарплата',
   },
+  total: {
+    en: 'Total',
+    uk: 'Всього',
+  },
 });
