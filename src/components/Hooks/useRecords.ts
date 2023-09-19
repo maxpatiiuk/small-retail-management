@@ -69,7 +69,8 @@ export function useRecords<T extends BaseRecord>(
         );
         const modifiedData = preservedData.filter(
           (data) =>
-            normalize(indexedDocuments[data.id]?.data()) !== normalize(data),
+            normalize(documentToData(indexedDocuments[data.id!])) !==
+            normalize(data),
         );
         const updatePromises = modifiedData.map(({ id, ...record }) =>
           updateDoc(

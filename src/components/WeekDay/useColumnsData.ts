@@ -40,7 +40,7 @@ export function useColumnsData(weekDays: RA<WeekDay>): {
         columnsData === undefined
           ? error("Column data hasn't been fetched yet")
           : setRemoteColumnsData(flattenColumnsData(columnsData)).then(
-              syncAggregates.bind(undefined, weekDays),
+              syncAggregates,
             ),
       [setRemoteColumnsData, columnsData],
     ),
