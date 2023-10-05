@@ -11,7 +11,7 @@ import { localization } from '../../const/localization';
 export function useMonthStats(date: Date): RA<StatCell> | undefined {
   const employees = React.useContext(EmployeesContext);
   const year = date.getFullYear();
-  const month = date.getMonth();
+  const month = date.getMonth() + 1;
   return useAsyncState(
     React.useCallback(
       () =>
