@@ -5,7 +5,6 @@ import { RA } from '../../lib/types';
 import { replaceItem } from '../../lib/utils';
 import { Entry } from './types';
 import { useLiveState } from '../Hooks/useLiveState';
-import { WeekDay } from './ColumnsContent';
 import { localization } from '../../const/localization';
 import { Input } from '../Atoms/Input';
 import { Employee } from '../../app/employees/types';
@@ -21,21 +20,26 @@ export function ColumnsEdit({
 }): JSX.Element {
   return (
     <Table.Body>
-      {columnsData.map(({ employee, data }, employeeIndex) => (
+      {columnsData.map(({ isToday, weekDay, data }, employeeIndex) => (
         <Table.Row key={employeeIndex}>
-          <Table.Header scope="row">{employee.name}</Table.Header>
-          {data.map(({ weekDay, entry }, dayIndex) => (
+          <Table.Header
+            scope="row"
+            className={isToday ? '!bg-green-100' : 'bg-white'}
+          >{`${weekDay.date.getDate()}, ${weekDay.weekDay}`}</Table.Header>
+          {data.map(({ employee, entry }, dayIndex) => (
             <CellEdit
               key={dayIndex}
               employee={employee}
-              weekDay={weekDay}
+              isToday={isToday}
+              date={weekDay.date}
               entry={entry}
               onChange={(entry): void =>
                 handleChange(
                   replaceItem(columnsData, employeeIndex, {
-                    employee,
+                    weekDay,
+                    isToday,
                     data: replaceItem(data, dayIndex, {
-                      weekDay,
+                      employee,
                       entry,
                     }),
                   }),
@@ -51,12 +55,14 @@ export function ColumnsEdit({
 
 function CellEdit({
   employee,
-  weekDay: { date, isToday },
+  isToday,
+  date,
   entry,
   onChange: handleChange,
 }: {
+  readonly isToday: boolean;
   readonly employee: Employee;
-  readonly weekDay: WeekDay;
+  readonly date: Date;
   readonly entry: Entry;
   readonly onChange: (entry: Entry) => void;
 }): JSX.Element {

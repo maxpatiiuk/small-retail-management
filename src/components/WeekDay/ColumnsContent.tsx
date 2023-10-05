@@ -6,11 +6,9 @@ import { View } from '../../app/(entries)/[[...segments]]/useSegments';
 import {
   getFirstDayOfWeek,
   months,
-  shortWeekDays,
   weekDays,
 } from '../Atoms/Internationalization';
 import { DAY, WEEK } from '../Atoms/timeUnits';
-import { useToday } from '../Hooks/useToday';
 import { ColumnsEdit } from './ColumnsEdit';
 import { Form } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -18,6 +16,7 @@ import { useColumnsData } from './useColumnsData';
 import { Submit } from '../Atoms/Submit';
 import { LoadingBar, loading } from '../Molecules/Loading';
 import { className } from '../Atoms/className';
+import { EmployeesContext } from '../../app/employees';
 
 export function ColumnsContent({
   view,
@@ -36,13 +35,15 @@ export function ColumnsContent({
     onSave: handleSave,
   } = useColumnsData(weekDays);
 
+  const employees = React.useContext(EmployeesContext);
+
   return columnsData === undefined ? (
     <LoadingBar />
   ) : (
     <Form className="contents" onSubmit={(): void => loading(handleSave())}>
       <Table.Container
         className={className.strippedTable}
-        style={{ '--column-count': daysCount } as React.CSSProperties}
+        style={{ '--column-count': employees.length } as React.CSSProperties}
       >
         <TableHeader weekDays={weekDays} />
         <ColumnsEdit columnsData={columnsData} onChange={setColumnsData} />
@@ -60,13 +61,9 @@ export function ColumnsContent({
 export type WeekDay = {
   readonly date: Date;
   readonly weekDay: string;
-  readonly shortWeekDay: string;
-  readonly isToday: boolean;
 };
 
 function useWeekDays(daysCount: number, currentDate: Date): RA<WeekDay> {
-  const today = useToday();
-
   return React.useMemo(() => {
     const firstDay = getFirstDayOfWeek(currentDate);
 
@@ -79,14 +76,11 @@ function useWeekDays(daysCount: number, currentDate: Date): RA<WeekDay> {
             return date;
           });
 
-    const todayString = today.toLocaleDateString();
     return dates.map((date) => ({
       date,
       weekDay: weekDays[date.getDay()],
-      shortWeekDay: shortWeekDays[date.getDay()],
-      isToday: todayString === date.toLocaleDateString(),
     }));
-  }, [daysCount, currentDate, today]);
+  }, [daysCount, currentDate]);
 }
 
 function TableHeader({
@@ -94,6 +88,7 @@ function TableHeader({
 }: {
   readonly weekDays: RA<WeekDay>;
 }): JSX.Element {
+  const employees = React.useContext(EmployeesContext);
   const dateLabel = React.useMemo(
     () =>
       Array.from(new Set(weekDays.map(({ date }) => date.getMonth())))
@@ -105,15 +100,9 @@ function TableHeader({
     <Table.Head>
       <Table.Row>
         <Table.Header scope="col">{dateLabel}</Table.Header>
-        {weekDays.map(({ weekDay, shortWeekDay, date, isToday }, index) => (
-          <Table.Header
-            key={index}
-            scope="col"
-            className={isToday ? '!bg-green-100' : 'bg-white'}
-          >
-            {`${date.getDate()}, `}
-            <span className="sm:hidden">{shortWeekDay}</span>
-            <span className="hidden sm:inline">{weekDay}</span>
+        {employees.map(({ name }, index) => (
+          <Table.Header key={index} scope="col">
+            {name}
           </Table.Header>
         ))}
       </Table.Row>

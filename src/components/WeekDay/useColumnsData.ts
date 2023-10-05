@@ -10,6 +10,7 @@ import { useLiveState } from '../Hooks/useLiveState';
 import { Employee } from '../../app/employees/types';
 import { error } from '../../lib/utils';
 import { syncAggregates } from './syncAggregates';
+import { useToday } from '../Hooks/useToday';
 
 export function useColumnsData(weekDays: RA<WeekDay>): {
   readonly columnsData: RA<ColumnsData> | undefined;
@@ -19,11 +20,13 @@ export function useColumnsData(weekDays: RA<WeekDay>): {
 } {
   const employees = React.useContext(EmployeesContext);
   const [remoteColumnsData, setRemoteColumnsData] = useRemoteData(weekDays);
+
+  const today = useToday();
   const getColumnsData = React.useCallback(
     () =>
       employees === undefined || remoteColumnsData === undefined
         ? undefined
-        : indexColumnsData(remoteColumnsData, employees, weekDays),
+        : indexColumnsData(remoteColumnsData, employees, weekDays, today),
     [weekDays, employees, remoteColumnsData],
   );
   const [columnsData, setColumnsData] = useLiveState(getColumnsData);
@@ -79,15 +82,17 @@ const indexColumnsData = (
   remoteColumnData: RA<Entry>,
   employees: RA<Employee>,
   weekDays: RA<WeekDay>,
+  today: Date,
 ): RA<ColumnsData> =>
-  employees.map((employee) => {
+  weekDays.map((weekDay) => {
+    const todayString = today.toLocaleDateString();
     const entries = remoteColumnData.filter(
-      (entry) => entry.employeeId === employee.id,
+      (entry) =>
+        entry.date.toLocaleDateString() === weekDay.date.toLocaleDateString(),
     );
-    const data = weekDays.map((weekDay) => {
+    const data = employees.map((employee) => {
       const remoteEntry = entries.find(
-        (entry) =>
-          entry.date.toLocaleDateString() === weekDay.date.toLocaleDateString(),
+        (entry) => entry.employeeId === employee.id,
       );
 
       const entry: Entry = remoteEntry ?? {
@@ -98,19 +103,24 @@ const indexColumnsData = (
         expenses: 0,
       };
 
-      return { weekDay, entry };
+      return { employee, entry };
     });
 
-    return { employee, data };
+    return {
+      weekDay,
+      data,
+      isToday: todayString === weekDay.date.toLocaleDateString(),
+    };
   });
 
 export type ColumnsData = {
-  readonly employee: Employee;
+  readonly weekDay: WeekDay;
   readonly data: RA<ColumnData>;
+  readonly isToday: boolean;
 };
 
 type ColumnData = {
-  readonly weekDay: WeekDay;
+  readonly employee: Employee;
   readonly entry: Entry;
 };
 
