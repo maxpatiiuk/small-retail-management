@@ -26,7 +26,6 @@ function StatsTable({
   readonly data: RA<StatCell>;
 }): JSX.Element {
   const sum = useSumStats(data);
-  // BUG: sticky header top not working
   return (
     <Table.Container
       className={className.strippedTable}

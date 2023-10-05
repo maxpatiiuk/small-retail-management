@@ -20,7 +20,19 @@ export const Table = {
   Header: wrap<'th', { readonly scope: 'row' | 'col' }>(
     'Table.Header',
     'th',
-    'bg-white flex items-center gap-1 [scope="row"]:left-0 [scope="cell"]:top-0 sticky',
+    'bg-white flex items-center gap-1 sticky',
+    ({ className, scope, ...rest }) => ({
+      ...rest,
+      scope,
+      /*
+       * Despite https://github.com/tailwindlabs/tailwindcss/pull/8299,
+       * attribute selectors in arbitrary variants are not supported
+       */
+      className: `
+        ${className}
+        ${scope === 'row' ? 'left-0' : scope === 'col' ? 'top-0' : ''}
+      `,
+    }),
   ),
   Cell: wrap('Table.Cell', 'td', 'flex items-center gap-1'),
 };
