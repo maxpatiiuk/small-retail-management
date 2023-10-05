@@ -28,7 +28,7 @@ export const dateUtils = {
         '-W',
       ),
     parse(weekString: string): Date | undefined {
-      const [year, week] = weekString.split('-').map(f.parseInt);
+      const [year, week] = weekString.split('-W').map(f.parseInt);
       return year === undefined || week === undefined
         ? undefined
         : getDateFromWeek(year, week);

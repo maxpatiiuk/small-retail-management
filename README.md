@@ -6,6 +6,7 @@
 - TODO: firebase -> settings -> environemnt type -> production
 - TODO: decide between vercel and firebase hosting
 - TODO: publish firestore rules
+- TODO: After migrating data, compare that all stats numbers are the same
 
 - TODO: update the following url: Source code for
   [https://one-c-table.vercel.app/](https://one-c-table.vercel.app/).
