@@ -133,4 +133,8 @@ export const localization = dictionary({
     en: 'Total',
     uk: 'Всього',
   },
+  groupBy: {
+    en: 'Group by:',
+    uk: 'Групувати за:',
+  },
 });

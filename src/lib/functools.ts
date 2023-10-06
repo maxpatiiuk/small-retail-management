@@ -18,17 +18,20 @@ export const f = {
     value: VALUE | undefined | void,
     callback: (value: VALUE) => RETURN,
   ): RETURN | undefined => (value === undefined ? undefined : callback(value)),
+
   parseInt(value: string | undefined): number | undefined {
     if (value === undefined) return undefined;
     const number = Number.parseInt(value);
     return Number.isNaN(number) ? undefined : number;
   },
+
   /** Like f.parseInt, but for floats */
   parseFloat(value: string | undefined): number | undefined {
     if (value === undefined) return undefined;
     const number = Number.parseFloat(value);
     return Number.isNaN(number) ? undefined : number;
   },
+
   /**
    * A better typed version of Array.prototype.includes
    *
@@ -37,8 +40,26 @@ export const f = {
    */
   includes: <T>(array: RA<T>, item: unknown): item is T =>
     array.includes(item as T),
+
   min(...array: RA<number | undefined>): number | undefined {
     const data = filterArray(array);
     return data.length === 0 ? undefined : Math.min(...data);
   },
+
+  max(...array: RA<number | undefined>): number | undefined {
+    const data = filterArray(array);
+    return data.length === 0 ? undefined : Math.max(...data);
+  },
+
+  transpose: <T>(array: RA<RA<T>>): RA<RA<T>> =>
+    array[0].map((_, colIndex) => array.map((row) => row[colIndex])),
+
+  between: <T>(
+    min: number,
+    max: number,
+    callback: (value: number, index: number) => T,
+  ): RA<T> =>
+    Array.from({ length: max - min + 1 }, (_, index) =>
+      callback(min + index + 1, index),
+    ),
 } as const;
