@@ -24,15 +24,7 @@ ChartJS.register(
 
 export type DataSet = { readonly label: string; readonly data: RA<number> };
 
-// Month: One chart. Group per employee. 3 columns per group
-
-// Year. Two tabs:
-// See all data for one month at a time - 12 charts. e groups. 3 columns
-// See all data for one employee at a time - e charts. 12 groups. 3 columns
-
-// All years. Two tabs:
-// See all data for one year at a time - y charts. e groups. 3 columns
-// See all data for one employee at a time - e charts. y groups 3 columns
+// TODO: format currency
 
 export function BarChart({
   title,
@@ -57,7 +49,7 @@ export function BarChart({
   );
 
   const yMin = React.useMemo(
-    () => f.min(...dataSets.flat().map(({ data }) => f.min(...data) ?? 0)) ?? 0,
+    () => f.min(...dataSets.flat().map(({ data }) => f.min(...data))) ?? 0,
     [dataSets],
   );
 
@@ -76,6 +68,9 @@ export function BarChart({
           title: {
             display: true,
             text: title,
+            font: {
+              size: 20,
+            },
           },
         },
         responsive: true,

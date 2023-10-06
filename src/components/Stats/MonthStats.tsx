@@ -8,6 +8,7 @@ import { LoadingBar } from '../Molecules/Loading';
 import { StatCell, useMonthStats, useSumStats } from './fetch';
 import { BarChart } from './BarChart';
 
+// TODO: test chart + table sizing on mobile (30, 365, *)
 export function MonthStats({ date }: { readonly date: Date }): JSX.Element {
   const data = useMonthStats(date);
 
@@ -16,7 +17,7 @@ export function MonthStats({ date }: { readonly date: Date }): JSX.Element {
   ) : (
     <>
       <StatsTable date={date} data={data} />
-      <StatsChart date={date} data={data} />
+      <StatsChart title={dateToLabel(date)} data={data} />
     </>
   );
 }
@@ -61,7 +62,11 @@ function TableHeader({ date }: { readonly date: Date }): JSX.Element {
 const dateToLabel = (date: Date) =>
   `${months[date.getMonth()]} ${date.getFullYear()}`;
 
-function TableRow({ data }: { readonly data: StatCell }): JSX.Element {
+function TableRow({
+  data,
+}: {
+  readonly data: Omit<StatCell, 'employeeId'>;
+}): JSX.Element {
   return (
     <Table.Row>
       <Table.Header scope="col">{data.label}</Table.Header>
@@ -78,11 +83,11 @@ const dataSetLabels = {
   salary: localization.salary,
 };
 
-function StatsChart({
-  date,
+export function StatsChart({
+  title,
   data,
 }: {
-  readonly date: Date;
+  readonly title: string;
   readonly data: RA<StatCell>;
 }): JSX.Element {
   const labels = React.useMemo(() => data.map((cell) => cell.label), []);
@@ -94,7 +99,5 @@ function StatsChart({
       })),
     [],
   );
-  return (
-    <BarChart title={dateToLabel(date)} labels={labels} dataSets={dataSets} />
-  );
+  return <BarChart title={title} labels={labels} dataSets={dataSets} />;
 }

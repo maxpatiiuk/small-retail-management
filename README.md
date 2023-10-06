@@ -7,6 +7,7 @@
 - TODO: decide between vercel and firebase hosting
 - TODO: publish firestore rules
 - TODO: After migrating data, compare that all stats numbers are the same
+- TODO: render previous results grayed out while loading new
 
 - TODO: update the following url: Source code for
   [https://one-c-table.vercel.app/](https://one-c-table.vercel.app/).

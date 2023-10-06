@@ -14,7 +14,7 @@ import { db } from '../../lib/firestore';
 import { error } from '../../lib/utils';
 import { SECOND } from '../Atoms/timeUnits';
 
-type BaseRecord = { readonly id?: string };
+export type BaseRecord = { readonly id?: string };
 
 export type Changelog<T extends BaseRecord> = {
   readonly removed: RA<T>;
@@ -125,7 +125,7 @@ function getCollectionName(query: Query): string | undefined {
     : undefined;
 }
 
-const documentToData = <T extends BaseRecord>(
+export const documentToData = <T extends BaseRecord>(
   document: QueryDocumentSnapshot,
 ): T => ({
   id: document.id,

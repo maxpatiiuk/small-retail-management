@@ -1,4 +1,4 @@
-const current = 'aria-[pressed]:brightness-75 aria-[current]:brightness-150';
+const current = 'aria-[pressed]:brightness-125 aria-[current]:brightness-150';
 export const className = {
   input: 'rounded pl-1 pr-1 sm:pl-3 sm:pr-3 border-none ring-1 ring-black',
   button: `inline-flex justify-center items-center px-4 py-2 rounded-md border-none text-white ${current}`,

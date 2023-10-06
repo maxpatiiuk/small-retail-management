@@ -92,7 +92,7 @@ async function applyDeltas(deltas: Deltas): Promise<void> {
   await Promise.all(promises).then(() => undefined);
 }
 
-export async function fetchMonthStat(
+async function fetchMonthStat(
   year: string,
   month: string,
   employeeId: string,
@@ -110,11 +110,11 @@ export async function fetchMonthStat(
   return document as DocumentSnapshot<DeltaEntry, DeltaEntry>;
 }
 
-export async function fetchYearStat(
+async function fetchYearStat(
   year: string,
   employeeId: string,
 ): Promise<DocumentSnapshot<DeltaEntry, DeltaEntry>> {
-  const docRef = doc(db, 'yearSums', year, 'employee', employeeId);
+  const docRef = doc(db, 'yearSums', employeeId, 'year', year);
   const document = await getDoc(docRef);
   return document as DocumentSnapshot<DeltaEntry, DeltaEntry>;
 }

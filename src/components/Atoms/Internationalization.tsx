@@ -1,3 +1,4 @@
+import { f } from '../../lib/functools';
 import { currencies, getLanguage } from '../../lib/localization';
 import { RA } from '../../lib/types';
 import { DAY, MONTH, WEEK, YEAR } from './timeUnits';
@@ -7,7 +8,7 @@ export const months = getMonthNames('long');
 
 function getMonthNames(format: 'long' | 'short'): RA<string> {
   const months = new Intl.DateTimeFormat(getLanguage(), { month: format });
-  return Array.from({ length: YEAR / MONTH }, (_, month) =>
+  return f.between(0, YEAR / MONTH, (month) =>
     months.format(new Date(0, month, 2, 0, 0, 0)),
   );
 }
@@ -17,12 +18,12 @@ export const weekDays = getWeekDays('long');
 
 function getWeekDays(format: 'long' | 'short'): RA<string> {
   const weekDays = new Intl.DateTimeFormat(getLanguage(), { weekday: format });
-  return Array.from({ length: WEEK / DAY }, (_, weekDay) =>
-    weekDays.format(new Date(2017, 0, 1 + weekDay, 0, 0, 0)),
+  return f.between(1, WEEK / DAY + 1, (weekDay) =>
+    weekDays.format(new Date(2017, 0, weekDay, 0, 0, 0)),
   );
 }
 
-const locale = new Intl.Locale(navigator.language);
+const locale = new Intl.Locale(getLanguage());
 
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace
