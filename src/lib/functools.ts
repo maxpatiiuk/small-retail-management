@@ -1,4 +1,4 @@
-import { RA } from './types';
+import { RA, filterArray } from './types';
 
 /**
  * A collection of helper functions for functional programming style
@@ -37,4 +37,8 @@ export const f = {
    */
   includes: <T>(array: RA<T>, item: unknown): item is T =>
     array.includes(item as T),
+  min(...array: RA<number | undefined>): number | undefined {
+    const data = filterArray(array);
+    return data.length === 0 ? undefined : Math.min(...data);
+  },
 } as const;

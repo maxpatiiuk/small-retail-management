@@ -14,3 +14,18 @@ export type GetOrSet<T> = readonly [
 ];
 
 export type ValueOf<T> = T[keyof T];
+
+// eslint-disable-next-line functional/prefer-readonly-type
+export type Writable<T> = {
+  -readonly [K in keyof T]: T[K];
+};
+
+/**
+ * Cast type to writable. Equivalent to doing "as Writable<T>", except this
+ * way, don't have to manually specify the generic type
+ */
+export const writable = <T>(value: T): Writable<T> => value;
+
+/** Filter undefined items out of the array */
+export const filterArray = <T>(array: RA<T | undefined>): RA<T> =>
+  array.filter((item): item is T => item !== undefined);

@@ -1,3 +1,4 @@
+import React from 'react';
 import { localization } from '../../const/localization';
 import { RA } from '../../lib/types';
 import { formatCurrency, months } from '../Atoms/Internationalization';
@@ -5,6 +6,7 @@ import { Table } from '../Atoms/Table';
 import { className } from '../Atoms/className';
 import { LoadingBar } from '../Molecules/Loading';
 import { StatCell, useMonthStats, useSumStats } from './fetch';
+import { BarChart } from './BarChart';
 
 export function MonthStats({ date }: { readonly date: Date }): JSX.Element {
   const data = useMonthStats(date);
@@ -14,6 +16,7 @@ export function MonthStats({ date }: { readonly date: Date }): JSX.Element {
   ) : (
     <>
       <StatsTable date={date} data={data} />
+      <StatsChart date={date} data={data} />
     </>
   );
 }
@@ -43,12 +46,10 @@ function StatsTable({
 }
 
 function TableHeader({ date }: { readonly date: Date }): JSX.Element {
-  const year = date.getFullYear();
-  const month = date.getMonth();
   return (
     <Table.Head>
       <Table.Row>
-        <Table.Header scope="row">{`${months[month]} ${year}`}</Table.Header>
+        <Table.Header scope="row">{dateToLabel(date)}</Table.Header>
         <Table.Header scope="row">{localization.revenue}</Table.Header>
         <Table.Header scope="row">{localization.expenses}</Table.Header>
         <Table.Header scope="row">{localization.salary}</Table.Header>
@@ -56,6 +57,9 @@ function TableHeader({ date }: { readonly date: Date }): JSX.Element {
     </Table.Head>
   );
 }
+
+const dateToLabel = (date: Date) =>
+  `${months[date.getMonth()]} ${date.getFullYear()}`;
 
 function TableRow({ data }: { readonly data: StatCell }): JSX.Element {
   return (
@@ -65,5 +69,32 @@ function TableRow({ data }: { readonly data: StatCell }): JSX.Element {
       <Table.Cell>{formatCurrency(data.expenses)}</Table.Cell>
       <Table.Cell>{formatCurrency(data.salary)}</Table.Cell>
     </Table.Row>
+  );
+}
+
+const dataSetLabels = {
+  revenue: localization.revenue,
+  expenses: localization.expenses,
+  salary: localization.salary,
+};
+
+function StatsChart({
+  date,
+  data,
+}: {
+  readonly date: Date;
+  readonly data: RA<StatCell>;
+}): JSX.Element {
+  const labels = React.useMemo(() => data.map((cell) => cell.label), []);
+  const dataSets = React.useMemo(
+    () =>
+      Object.entries(dataSetLabels).map(([key, label]) => ({
+        label,
+        data: data.map((cell) => cell[key]),
+      })),
+    [],
+  );
+  return (
+    <BarChart title={dateToLabel(date)} labels={labels} dataSets={dataSets} />
   );
 }
