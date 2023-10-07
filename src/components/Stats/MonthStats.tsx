@@ -8,7 +8,6 @@ import { LoadingBar } from '../Molecules/Loading';
 import { StatCell, useMonthStats, useSumStats } from './fetch';
 import { BarChart } from './BarChart';
 
-// TODO: test chart + table sizing on mobile (30, 365, *)
 export function MonthStats({ date }: { readonly date: Date }): JSX.Element {
   const data = useMonthStats(date);
 
@@ -32,7 +31,7 @@ function StatsTable({
   const sum = useSumStats(data);
   return (
     <Table.Container
-      className={className.strippedTable}
+      className={`${className.strippedTable} !overflow-visible`}
       style={{ '--column-count': 3 } as React.CSSProperties}
     >
       <TableHeader date={date} />

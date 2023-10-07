@@ -59,7 +59,7 @@ export const f = {
     max: number,
     callback: (value: number, index: number) => T,
   ): RA<T> =>
-    Array.from({ length: max - min + 1 }, (_, index) =>
-      callback(min + index + 1, index),
+    Array.from({ length: max - min }, (_, index) =>
+      callback(min + index, index),
     ),
 } as const;

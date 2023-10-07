@@ -13,6 +13,8 @@ import { useNeighboringDates } from './useNeighboringDates';
 import { ColumnsContent } from '../../../components/WeekDay/ColumnsContent';
 import { useToday } from '../../../components/Hooks/useToday';
 import { MonthStats } from '../../../components/Stats/MonthStats';
+import { YearStats } from '../../../components/Stats/YearStats';
+import { AllStats } from '../../../components/Stats/AllStats';
 
 export default function MainPage({
   params: { segments = [] },
@@ -20,6 +22,7 @@ export default function MainPage({
   readonly params: { readonly segments?: RA<string> };
 }): JSX.Element {
   const { date, view, getUrl } = useSegments(segments);
+  const canOverflow = ['month', 'year', 'all'].includes(view);
   return (
     <>
       <header className="flex gap-2">
@@ -33,14 +36,21 @@ export default function MainPage({
           <DateSelect view={view} date={date} getUrl={getUrl} />
         )}
       </section>
-      <main className="flex-1 flex flex-col gap-2 sm:gap-4 overflow-hidden">
+      <main
+        className={`
+          flex-1 flex flex-col gap-2 sm:gap-4
+          ${canOverflow ? 'overflow-auto' : 'overflow-hidden'}
+        `}
+      >
         {view === 'day' || view === 'week' ? (
           <ColumnsContent date={date} view={view} />
         ) : view === 'month' ? (
           <MonthStats date={date} />
-        ) : // FEATURE: year stats
-        // FEATURE: all year stats
-        undefined}
+        ) : view === 'year' ? (
+          <YearStats date={date} />
+        ) : (
+          <AllStats />
+        )}
       </main>
     </>
   );

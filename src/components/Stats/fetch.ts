@@ -2,7 +2,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import React from 'react';
 import { EmployeesContext } from '../../app/employees';
 import { Employee } from '../../app/employees/types';
-import { RA } from '../../lib/types';
+import { IR, RA } from '../../lib/types';
 import { useAsyncState } from '../Hooks/useAsyncState';
 import { computeSalary } from '../WeekDay/statUtils';
 import type { DeltaEntry } from '../WeekDay/syncAggregates';
@@ -96,6 +96,46 @@ export function useYearStats(date: Date): RA<RA<StatCell>> | undefined {
     true,
   )[0];
 }
+
+export function useAllStats(): RA<IR<StatCell>> | undefined {
+  const employees = React.useContext(EmployeesContext);
+  return useAsyncState(
+    React.useCallback(() => f.maybe(employees, fetchAllStats), [employees]),
+    true,
+  )[0];
+}
+
+const fetchAllStats = async (
+  employees: RA<Employee>,
+): Promise<RA<IR<StatCell>>> =>
+  Promise.all(
+    employees.map((employee) =>
+      getDocs(collection(db, 'yearSums', employee.id!, 'year'))
+        .then((querySnapshot) => {
+          const documents = Object.fromEntries(
+            querySnapshot.docs
+              .map((document) =>
+                documentToData<DeltaEntry & BaseRecord>(document),
+              )
+              .map((document) => [document.id!, document] as const),
+          );
+
+          const years = Object.keys(documents).map(Number.parseInt);
+          const minYear = Math.min(...years);
+          const maxYear = Math.max(...years);
+          return Object.fromEntries(
+            f.between(minYear, maxYear + 1, (year) => [
+              year,
+              documentToStatCell(employee, documents[year], YEAR),
+            ]),
+          );
+        })
+        .catch((error) => {
+          console.error(error, { employee });
+          throw new Error(error);
+        }),
+    ),
+  );
 
 export function useSumStats(data: RA<StatCell>): Omit<StatCell, 'employeeId'> {
   return React.useMemo(
