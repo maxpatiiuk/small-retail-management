@@ -21,7 +21,7 @@ export default function MainPage({
 }: {
   readonly params: { readonly segments?: RA<string> };
 }): JSX.Element {
-  const { date, view, getUrl } = useSegments(segments);
+  const { date, view, getUrl } = useSegments(segments[0]);
   const canOverflow = ['month', 'year', 'all'].includes(view);
   return (
     <>

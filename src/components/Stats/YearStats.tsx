@@ -7,22 +7,26 @@ import { GroupByChooser } from './GroupByChooser';
 import { EmployeesContext } from '../../app/employees';
 import { StatsChart } from './MonthStats';
 import { f } from '../../lib/functools';
+import { useStale } from '../Hooks/useStale';
 
 export function YearStats({ date }: { readonly date: Date }): JSX.Element {
-  const data = useYearStats(date);
+  const { value: data, isStale } = useStale(useYearStats(date));
 
-  return data === undefined ? (
-    <LoadingBar />
-  ) : (
-    <GroupByChooser>
-      {(groupBy) =>
-        groupBy === 'date' ? (
-          <MonthsStats data={data} />
-        ) : (
-          <EmployeesCharts data={data} />
-        )
-      }
-    </GroupByChooser>
+  return (
+    <>
+      {isStale && <LoadingBar />}
+      {typeof data === 'object' && (
+        <GroupByChooser>
+          {(groupBy) =>
+            groupBy === 'date' ? (
+              <MonthsStats data={data} />
+            ) : (
+              <EmployeesCharts data={data} />
+            )
+          }
+        </GroupByChooser>
+      )}
+    </>
   );
 }
 

@@ -8,7 +8,6 @@ import {
   addDoc,
   collection,
   updateDoc,
-  type UpdateData,
 } from 'firebase/firestore';
 import { db } from '../../lib/firestore';
 import { error } from '../../lib/utils';
@@ -73,10 +72,7 @@ export function useRecords<T extends BaseRecord>(
             normalize(data),
         );
         const updatePromises = modifiedData.map(({ id, ...record }) =>
-          updateDoc(
-            indexedDocuments[id]?.ref,
-            record as UpdateData<Omit<T, 'id'>>,
-          ),
+          updateDoc(indexedDocuments[id!]?.ref, record),
         );
 
         return Promise.all([
@@ -87,7 +83,7 @@ export function useRecords<T extends BaseRecord>(
           removed: removedDocuments.map(documentToData<T>),
           added: newData,
           updated: modifiedData.map((record) => ({
-            old: documentToData(indexedDocuments[record.id]),
+            old: documentToData(indexedDocuments[record.id!]),
             new: record,
           })),
         }));

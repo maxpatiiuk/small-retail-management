@@ -17,6 +17,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingBar, loading } from '../Molecules/Loading';
 import { className } from '../Atoms/className';
 import { EmployeesContext } from '../../app/employees';
+import { useStale } from '../Hooks/useStale';
 
 export function ColumnsContent({
   view,
@@ -29,32 +30,38 @@ export function ColumnsContent({
   const weekDays = useWeekDays(daysCount, date);
 
   const {
-    columnsData,
+    columnsData: currentColumnsData,
     setColumnsData,
     onReset: handleReset,
     onSave: handleSave,
   } = useColumnsData(weekDays);
+  const { value: columnsData, isStale } = useStale(currentColumnsData);
 
   const employees = React.useContext(EmployeesContext);
 
-  return columnsData === undefined ? (
-    <LoadingBar />
-  ) : (
-    <Form className="contents" onSubmit={(): void => loading(handleSave())}>
-      <Table.Container
-        className={className.strippedTable}
-        style={{ '--column-count': employees.length } as React.CSSProperties}
-      >
-        <TableHeader weekDays={weekDays} />
-        <ColumnsEdit columnsData={columnsData} onChange={setColumnsData} />
-      </Table.Container>
-      <div className="flex gap-2 justify-between">
-        <Button.Danger onClick={handleReset}>
-          {localization.cancel}
-        </Button.Danger>
-        <Submit.Success>{localization.save}</Submit.Success>
-      </div>
-    </Form>
+  return (
+    <>
+      {isStale && <LoadingBar />}
+      {typeof columnsData === 'object' && (
+        <Form className="contents" onSubmit={(): void => loading(handleSave())}>
+          <Table.Container
+            className={className.strippedTable}
+            style={
+              { '--column-count': employees.length } as React.CSSProperties
+            }
+          >
+            <TableHeader weekDays={weekDays} />
+            <ColumnsEdit columnsData={columnsData} onChange={setColumnsData} />
+          </Table.Container>
+          <div className="flex gap-2 justify-between">
+            <Button.Danger onClick={handleReset}>
+              {localization.cancel}
+            </Button.Danger>
+            <Submit.Success>{localization.save}</Submit.Success>
+          </div>
+        </Form>
+      )}
+    </>
   );
 }
 

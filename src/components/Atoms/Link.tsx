@@ -11,13 +11,13 @@ const linkWrapper = (name: string, className: string) =>
         />
       );
     },
-  }[name]);
+  })[name];
 
 export const Link = {
   Default: linkWrapper('Link.Default', `${className.link}`),
   Success: linkWrapper(
     'Link.Success',
-    `${className.button} ${className.success}`
+    `${className.button} ${className.success}`,
   ),
   Danger: linkWrapper('Link.Danger', `${className.button} ${className.danger}`),
   Info: linkWrapper('Link.Info', `${className.button} ${className.info}`),

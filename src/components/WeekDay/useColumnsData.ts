@@ -27,7 +27,7 @@ export function useColumnsData(weekDays: RA<WeekDay>): {
       employees === undefined || remoteColumnsData === undefined
         ? undefined
         : indexColumnsData(remoteColumnsData, employees, weekDays, today),
-    [weekDays, employees, remoteColumnsData],
+    [employees, remoteColumnsData],
   );
   const [columnsData, setColumnsData] = useLiveState(getColumnsData);
 

@@ -7,16 +7,20 @@ import { className } from '../Atoms/className';
 import { LoadingBar } from '../Molecules/Loading';
 import { StatCell, useMonthStats, useSumStats } from './fetch';
 import { BarChart } from './BarChart';
+import { useStale } from '../Hooks/useStale';
 
 export function MonthStats({ date }: { readonly date: Date }): JSX.Element {
-  const data = useMonthStats(date);
+  const { value: data, isStale } = useStale(useMonthStats(date));
 
-  return data === undefined ? (
-    <LoadingBar />
-  ) : (
+  return (
     <>
-      <StatsTable date={date} data={data} />
-      <StatsChart title={dateToLabel(date)} data={data} />
+      {isStale && <LoadingBar />}
+      {typeof data === 'object' && (
+        <>
+          <StatsTable date={date} data={data} />
+          <StatsChart title={dateToLabel(date)} data={data} />
+        </>
+      )}
     </>
   );
 }
@@ -98,7 +102,7 @@ export function StatsChart({
         label,
         data: data.map((cell) => cell[key]),
       })),
-    [],
+    [data],
   );
   return <BarChart title={title} labels={labels} dataSets={dataSets} />;
 }

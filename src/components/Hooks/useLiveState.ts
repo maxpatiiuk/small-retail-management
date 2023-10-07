@@ -1,6 +1,5 @@
 import React from 'react';
 import { GetOrSet } from '../../lib/types';
-import { useReadyEffect } from './useReadyEffect';
 
 /**
  * A synchronous version of useAsyncState
@@ -26,9 +25,25 @@ import { useReadyEffect } from './useReadyEffect';
  * ```
  */
 export function useLiveState<T>(callback: () => T): GetOrSet<T> {
-  const [state, setState] = React.useState<T>(callback);
+  const defaultValue = React.useMemo(callback, [callback]);
+  const [state, setState] = React.useState<T>(defaultValue);
+  const stateRef = React.useRef(state);
 
-  useReadyEffect(React.useCallback(() => setState(callback()), [callback]));
+  const updateState = React.useCallback<GetOrSet<T>[1]>((newValue) => {
+    const resolvedValue =
+      typeof newValue === 'function'
+        ? (newValue as (oldValue: T) => T)(stateRef.current)
+        : newValue;
+    stateRef.current = resolvedValue;
+    setState(resolvedValue);
+  }, []);
 
-  return [state, setState];
+  const previousDefaultValue = React.useRef(defaultValue);
+  const hasChanged = previousDefaultValue.current !== defaultValue;
+  if (hasChanged) {
+    previousDefaultValue.current = defaultValue;
+    updateState(defaultValue);
+  }
+
+  return [stateRef.current, updateState];
 }
