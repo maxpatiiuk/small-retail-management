@@ -8,7 +8,6 @@ export type View = (typeof views)[number];
 
 const queryStringName = 'date';
 
-// FEATURE: default to 'day' view on mobile?
 export function useSegments(rawDefaultView?: string): {
   readonly view: View;
   readonly date: Date;

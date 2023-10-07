@@ -14,18 +14,18 @@ export function GroupByChooser({
       <nav className="flex flex-wrap gap-2 items-center">
         {localization.groupBy}
         <Button.Info
-          aria-pressed={groupBy === 'date' ? true : undefined}
-          aria-controls={id}
-          onClick={(): void => setGroupBy('date')}
-        >
-          {localization.date}
-        </Button.Info>
-        <Button.Info
           aria-pressed={groupBy === 'employee' ? true : undefined}
           aria-controls={id}
           onClick={(): void => setGroupBy('employee')}
         >
           {localization.employee}
+        </Button.Info>
+        <Button.Info
+          aria-pressed={groupBy === 'date' ? true : undefined}
+          aria-controls={id}
+          onClick={(): void => setGroupBy('date')}
+        >
+          {localization.date}
         </Button.Info>
       </nav>
       <div id={id} className="flex flex-col xl:grid grid-cols-2 gap-8">

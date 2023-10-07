@@ -1,20 +1,51 @@
-# one-c-table
+# Small Retail Management
 
-- TODO: add documentation and screenshots
-- TODO: update site.webmanifest
-- TODO: add github repo description
-- TODO: firebase -> settings -> environemnt type -> production
-- TODO: decide between vercel and firebase hosting
-- TODO: publish firestore rules
-- TODO: After migrating data, compare that all stats numbers are the same
+A simple-to-use dashboard for tracking revenue, expenses, and salaries for every
+employee of your small business. Gain insights, see trends and make informed
+decisions.
 
-- TODO: update the following url: Source code for
-  [https://one-c-table.vercel.app/](https://one-c-table.vercel.app/).
+[Project description and screenshots](https://max.patii.uk/projects/small-retail-management)
+
+[Video demo](https://www.youtube.com/watch?v=NjbcGXO9c3g)
+
+## Features
+
+- Conveniently enter data for the day or entire week from your phone or desktop
+- See total revenue, expenses and salary for each employee for the month, year
+  or all time.
+- Easily jump between dates to see historical data
+- Add employees, set revenue share percentage and base salary - total salary
+  will be calculated automatically
+
+## Installation
+
+1. Clone this repository:
+
+   ```sh
+   git clone https://github.com/maxxxxxdlp/small-retail-management
+   ```
+
+2. Install dependencies:
+
+   ```sh
+   npm i
+   ```
+
+3. [Create a Firebase project and a Firestore database](https://firebase.google.com/docs/firestore/quickstart?hl=en&authuser=0)
+
+4. Use security rules in [./firestore.rules](./firestore.rules) for the
+   Firestore database. Modify the `isAuthenticated` function to match your
+   security needs - for example allow only users with certain email addresses to
+   access your application
+
+5. [Generate your Firebase config object](https://firebase.google.com/docs/web/learn-more?authuser=0#config-object).
+   Then put it into [./src/lib/firebase.ts](./src/lib/firebase.ts)
+
+6. [Enable Firebase authentication and enable Google authentication provider](https://firebase.google.com/docs/auth/web/google-signin?authuser=0&hl=en#before_you_begin).
 
 ## Development
 
 ```zsh
-npm i       # install dependencies
 npm run dev # start development server
 ```
 
@@ -24,7 +55,6 @@ This would start the development server at
 ## Production
 
 ```zsh
-npm i         # install dependencies
 npm run build # begin the build process
 npm run start # start production server
 ```

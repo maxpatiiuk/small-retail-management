@@ -2,9 +2,23 @@ import { dictionary } from '../lib/localization';
 
 export const localization = dictionary({
   siteTitle: { en: 'Small Retail Management', uk: 'Таблиця' },
-  // TODO: add
-  siteDescription: { en: '', uk: '' },
-  siteKeywords: { en: '', uk: '' },
+  siteDescription: {
+    en: `
+      A simple-to-use dashboard for tracking revenue, expenses, and salaries for
+      every employee of your small business. Gain insights, see trends, and make
+      informed decisions.
+    `,
+    uk: `
+      Проста у користуванні інформаційна панель для відстеження доходів, витрат
+      і зарплат кожного працівника вашого малого бізнесу. Отримуйте статистику,
+      спостерігайте за тенденціями приймайте обґрунтовані рішення та
+      оптимізуйте свій роздрібний бізнес.
+    `,
+  },
+  siteKeywords: {
+    en: 'Small Business Retail Management, Small Business, Retail Management, Financial Tracking, Employee Salaries, Revenue Analysis, Expense Monitoring, Retail Analysis',
+    uk: 'Управління роздрібною торгівлею малого бізнесу, малий бізнес, управління роздрібною торгівлею, фінансове відстеження, зарплати співробітників, аналіз доходів, моніторинг витрат, аналіз роздрібної торгівлі',
+  },
   loading: { en: 'Loading...', uk: 'Загрузка...' },
   signIn: { en: 'Sign In', uk: 'Вхід' },
   wrongEmail: {

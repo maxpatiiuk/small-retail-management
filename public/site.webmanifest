@@ -1,6 +1,6 @@
 {
-  "name": "Max Patiiuk",
-  "short_name": "Max Patiiuk",
+  "name": "Small Retail Management",
+  "short_name": "Small Retail Management",
   "icons": [
     {
       "src": "/icons/favicon-16x16.png",
@@ -35,6 +35,5 @@
   ],
   "theme_color": "#001122",
   "background_color": "#001122",
-  "start_url": "https://one-c-table.vercel.app/",
   "display": "standalone"
 }

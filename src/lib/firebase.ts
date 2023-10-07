@@ -1,10 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 
-// FIXME: check how to secure the app to allow usage only from some domains
-//   or make API key private? (in env variable)
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Before putting credentials here, make sure to enable API key restrictions:
+// https://cloud.google.com/docs/authentication/api-keys#api_key_restrictions
 const firebaseConfig = {
   apiKey: 'AIzaSyDKa1y-t8ouewErj0gjMVYYgTNe3d25FIc',
   authDomain: 'one-c-table.firebaseapp.com',
