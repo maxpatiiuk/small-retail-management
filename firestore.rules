@@ -1,0 +1,84 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Edit this function to match your security needs
+    // (for example allow only users with certain email addresses to access your
+    // application)
+    function isAuthenticated() {
+      return request.auth != null
+          && (
+              request.auth.token.email == "my-admin-account@gmail.com"
+           || request.auth.token.email == "my-second-admin-account@gmail.com"
+           || request.auth.token.email == "my-third-admin-account@gmail.com"
+           || request.auth.token.email == "my-fifth-admin-account@gmail.com"
+          )
+    }
+    
+    match /employees/{employeeId} {
+      allow read, delete: if isAuthenticated()
+      allow update, create: if isAuthenticated()
+        && request.resource.data.keys().hasAll(['baseSalary', 'isActive', 'name', 'incomeShare'])
+        && request.resource.data.keys().size() == 4
+        && request.resource.data.baseSalary is number
+        && request.resource.data.baseSalary >= 0
+        && request.resource.data.isActive is bool
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.incomeShare is int
+        && request.resource.data.incomeShare >= 0
+        && request.resource.data.incomeShare <= 100;
+    }
+  
+    match /entries/{entryId} {
+      allow read, delete: if isAuthenticated();
+      allow update, create: if isAuthenticated()
+        && request.resource.data.keys().hasAll(['employeeId', 'revenue', 'expenses', 'date'])
+        && request.resource.data.keys().size() == 4
+        && request.resource.data.employeeId is string
+        && request.resource.data.revenue is number
+        && request.resource.data.expenses is number
+        && request.resource.data.date is timestamp
+        && exists(/databases/$(database)/documents/employees/$(request.resource.data.employeeId));
+    }
+
+    function isValidYear(year) {
+      return int(year) >= 2000;
+    }
+
+    function isValidMonth(month) {
+      return int(month) >= 1 && int(month) <= 12;
+    }
+    
+    match /yearSums/{employeeId}/year/{year} {
+      allow list: if isAuthenticated();
+      allow get: if isAuthenticated()
+        && isValidYear(year);
+      allow delete: if false;
+      allow update, create: if isAuthenticated()
+        && request.resource.data.keys().hasAll(['revenue', 'expenses'])
+        && request.resource.data.keys().size() == 2
+        && request.resource.data.revenue is number
+        && request.resource.data.expenses is number
+        && isValidYear(year)
+        && exists(/databases/$(database)/documents/employees/$(employeeId));
+    }
+    
+    match /monthSums/{year}/month/{month}/employee/{employeeId} {
+      allow read: if isAuthenticated()
+        && isValidYear(year)
+        && isValidMonth(month);
+      allow delete: if false;
+      allow update, create: if isAuthenticated()
+        && request.resource.data.keys().hasAll(['revenue', 'expenses'])
+        && request.resource.data.keys().size() == 2
+        && request.resource.data.revenue is number
+        && request.resource.data.expenses is number
+        && isValidYear(year)
+        && isValidMonth(month)
+        && exists(/databases/$(database)/documents/employees/$(employeeId));
+    }
+    
+  }
+}
