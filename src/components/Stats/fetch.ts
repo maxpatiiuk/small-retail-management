@@ -63,11 +63,12 @@ const fetchMonthStats = async (
 export function documentToStatCell(
   employee: Employee,
   { revenue = 0, expenses = 0 }: Partial<DeltaEntry> | undefined = {},
-  source: number,
+  source: typeof MONTH | typeof YEAR,
 ): StatCell {
   const multiplier = source / MONTH;
   const salary =
-    employee.baseSalary + computeSalary(employee, { revenue }) * multiplier;
+    (revenue === 0 ? 0 : employee.baseSalary * multiplier) +
+    computeSalary(employee, { revenue });
 
   return {
     label: employee.name,
