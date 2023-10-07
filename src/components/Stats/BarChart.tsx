@@ -12,6 +12,7 @@ import { Bar } from 'react-chartjs-2';
 import { useTransitionDuration } from '../Hooks/useTransitionDuration';
 import { RA, writable } from '../../lib/types';
 import { f } from '../../lib/functools';
+import { formatCurrency } from '../Atoms/Internationalization';
 
 ChartJS.register(
   CategoryScale,
@@ -23,8 +24,6 @@ ChartJS.register(
 );
 
 export type DataSet = { readonly label: string; readonly data: RA<number> };
-
-// TODO: format currency
 
 export function BarChart({
   title,
@@ -72,6 +71,12 @@ export function BarChart({
               size: 20,
             },
           },
+          tooltip: {
+            callbacks: {
+              label: ({ dataset, parsed }) =>
+                `${dataset.label}: ${formatCurrency(parsed.y)}`,
+            },
+          },
         },
         responsive: true,
         animation: {
@@ -80,6 +85,10 @@ export function BarChart({
         scales: {
           y: {
             min: yMin >= 0 ? 0 : undefined,
+            ticks: {
+              callback: (value) =>
+                typeof value === 'number' ? formatCurrency(value) : value,
+            },
           },
         },
       }}
