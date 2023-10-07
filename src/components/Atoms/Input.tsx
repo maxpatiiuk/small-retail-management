@@ -32,7 +32,9 @@ const InputGeneric = wrap<
  * See https://codepen.io/maxpatiiuk/pen/WNLZORj?editors=1010
  * So have no choice but to use user agent.
  */
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+const isSafari = /^((?!chrome|android).)*safari/i.test(
+  globalThis.navigator?.userAgent ?? '',
+);
 const inputWeekSupported = !isSafari;
 
 const createDateInput = (
