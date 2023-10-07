@@ -39,7 +39,7 @@ function StatsTable({
         {data.map((rowData, index) => (
           <TableRow key={index} data={rowData} />
         ))}
-        <TableRow data={sum} />
+        <TableRow data={sum} isSpecial />
       </Table.Body>
     </Table.Container>
   );
@@ -63,11 +63,13 @@ const dateToLabel = (date: Date) =>
 
 function TableRow({
   data,
+  isSpecial = false,
 }: {
   readonly data: Omit<StatCell, 'employeeId'>;
+  readonly isSpecial?: boolean;
 }): JSX.Element {
   return (
-    <Table.Row>
+    <Table.Row className={isSpecial ? 'font-bold' : undefined}>
       <Table.Header scope="col">{data.label}</Table.Header>
       <Table.Cell>{formatCurrency(data.revenue)}</Table.Cell>
       <Table.Cell>{formatCurrency(data.expenses)}</Table.Cell>
