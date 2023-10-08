@@ -1,8 +1,14 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from 'firebase/app';
 
-// Before putting credentials here, make sure to enable API key restrictions:
-// https://cloud.google.com/docs/authentication/api-keys#api_key_restrictions
+/**
+ * Before putting credentials here, make sure to enable API key restrictions:
+ * https://cloud.google.com/docs/authentication/api-keys#api_key_restrictions
+ *
+ * Restrict to "Cloud Firestore API", "Identity Toolkit API" and
+ * "Token Service API" APIs
+ * Also, restrict to the domain of your app
+ */
 const firebaseConfig = {
   apiKey: 'AIzaSyDKa1y-t8ouewErj0gjMVYYgTNe3d25FIc',
   authDomain: 'one-c-table.firebaseapp.com',
