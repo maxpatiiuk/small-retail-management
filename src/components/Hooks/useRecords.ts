@@ -43,55 +43,65 @@ export function useRecords<T extends BaseRecord>(
   return [
     React.useMemo(() => documents?.map(documentToData<T>), [documents]),
     React.useCallback(
-      async (updatedData) => {
-        if (documents === undefined)
-          throw new Error("Can't modify documents before first fetch");
-
-        // Delete removed
-        const newIds = new Set(updatedData.map(({ id }) => id));
-        const removedDocuments = documents.filter(
-          (record) => !newIds.has(record.id),
-        );
-        const removePromises = removedDocuments.map(({ ref }) =>
-          deleteDoc(ref),
-        );
-
-        // Created added
-        const newData = updatedData.filter(({ id }) => id === undefined);
-        const addPromises = newData.map(({ id: _, ...data }) =>
-          addDoc(collection(db, collectionName), data),
-        );
-
-        // Modify updated
-        const preservedData = updatedData.filter(({ id }) => id !== undefined);
-        const indexedDocuments = Object.fromEntries(
-          documents.map((document) => [document.id, document]),
-        );
-        const modifiedData = preservedData.filter(
-          (data) =>
-            normalize(documentToData(indexedDocuments[data.id!])) !==
-            normalize(data),
-        );
-        const updatePromises = modifiedData.map(({ id, ...record }) =>
-          updateDoc(indexedDocuments[id!]?.ref, record),
-        );
-
-        return Promise.all([
-          ...removePromises,
-          ...addPromises,
-          ...updatePromises,
-        ]).then(() => ({
-          removed: removedDocuments.map(documentToData<T>),
-          added: newData,
-          updated: modifiedData.map((record) => ({
-            old: documentToData(indexedDocuments[record.id!]),
-            new: record,
-          })),
-        }));
-      },
+      async (updatedData) =>
+        documents === undefined
+          ? error("Can't modify documents before first fetch")
+          : reconcileRecords(updatedData, documents, collectionName),
       [documents, query, collectionName],
     ),
   ];
+}
+
+export async function reconcileRecords<T extends BaseRecord>(
+  updatedData: RA<T>,
+  documents: RA<QueryDocumentSnapshot>,
+  collectionName: string,
+): Promise<Changelog<T>> {
+  // Delete removed
+  const newIds = new Set(updatedData.map(({ id }) => id));
+  const removedDocuments = documents.filter((record) => !newIds.has(record.id));
+  const removePromises = removedDocuments.map(({ ref }) => deleteDoc(ref));
+
+  // Created added
+  const newData = updatedData.filter(({ id }) => id === undefined);
+  const addPromises = newData.map(({ id: _, ...data }) =>
+    addDoc(
+      collection(db, collectionName),
+      Object.fromEntries(
+        Object.entries(data).map(([key, value]) => [
+          key,
+          typeof value === 'object' && value instanceof UtcDate
+            ? value.unsafeDate
+            : value,
+        ]),
+      ),
+    ),
+  );
+
+  const preservedData = updatedData.filter(({ id }) => id !== undefined);
+  const indexedDocuments = Object.fromEntries(
+    documents.map((document) => [document.id, document]),
+  );
+  const modifiedData = preservedData.filter(
+    (data) =>
+      normalize(documentToData(indexedDocuments[data.id!])) !== normalize(data),
+  );
+  const updatePromises = modifiedData.map(({ id, ...record }) =>
+    updateDoc(indexedDocuments[id!]?.ref, record),
+  );
+
+  return Promise.all([
+    ...removePromises,
+    ...addPromises,
+    ...updatePromises,
+  ]).then(() => ({
+    removed: removedDocuments.map(documentToData<T>),
+    added: newData,
+    updated: modifiedData.map((record) => ({
+      old: documentToData(indexedDocuments[record.id!]),
+      new: record,
+    })),
+  }));
 }
 
 function useUnsafeCollectionName(query: Query): string {
