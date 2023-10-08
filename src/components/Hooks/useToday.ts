@@ -1,14 +1,15 @@
 import React from 'react';
 import { DAY, MINUTE } from '../Atoms/timeUnits';
+import { UtcDate } from '../../lib/UtcDate';
 
-export function useToday(): Date {
+export function useToday(): UtcDate {
   const [date, setDate] = React.useState(getMidnightToday);
 
   React.useEffect(() => {
-    const now = new Date();
+    const now = UtcDate.fromNow();
     const updateToday = () => setDate(getMidnightToday);
-    const offset = now.getTimezoneOffset() * MINUTE;
-    const millisecondsTillNextDay = DAY - ((now.getTime() - offset) % DAY);
+    const offset = new Date().getTimezoneOffset() * MINUTE;
+    const millisecondsTillNextDay = DAY - ((now.unixTimestamp - offset) % DAY);
 
     let interval: ReturnType<typeof setInterval>;
     const timeout = setTimeout(() => {
@@ -24,8 +25,4 @@ export function useToday(): Date {
   return date;
 }
 
-function getMidnightToday(): Date {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return today;
-}
+const getMidnightToday = (): UtcDate => UtcDate.fromNow();

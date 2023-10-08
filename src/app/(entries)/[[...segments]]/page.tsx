@@ -15,6 +15,7 @@ import { useToday } from '../../../components/Hooks/useToday';
 import { MonthStats } from '../../../components/Stats/MonthStats';
 import { YearStats } from '../../../components/Stats/YearStats';
 import { AllStats } from '../../../components/Stats/AllStats';
+import { UtcDate } from '../../../lib/UtcDate';
 
 export default function MainPage({
   params: { segments = [] },
@@ -62,8 +63,8 @@ function ViewSelect({
   getUrl,
 }: {
   readonly view: View;
-  readonly date: Date;
-  readonly getUrl: (view: View, date: Date) => string;
+  readonly date: UtcDate;
+  readonly getUrl: (view: View, date: UtcDate) => string;
 }): JSX.Element {
   return (
     <aside>
@@ -99,8 +100,8 @@ function DateSelect({
   getUrl,
 }: {
   readonly view: View;
-  readonly date: Date;
-  readonly getUrl: (view: View, date: Date) => string;
+  readonly date: UtcDate;
+  readonly getUrl: (view: View, date: UtcDate) => string;
 }): JSX.Element {
   const navigate = useRouter();
   const { previousDate, nextDate } = useNeighboringDates(view, date);

@@ -8,8 +8,9 @@ import { EmployeesContext } from '../../app/employees';
 import { StatsChart } from './MonthStats';
 import { f } from '../../lib/functools';
 import { useStale } from '../Hooks/useStale';
+import { UtcDate } from '../../lib/UtcDate';
 
-export function YearStats({ date }: { readonly date: Date }): JSX.Element {
+export function YearStats({ date }: { readonly date: UtcDate }): JSX.Element {
   const { value: data, isStale } = useStale(useYearStats(date));
 
   return (
@@ -40,7 +41,7 @@ function EmployeesCharts({
       f.transpose(data).map((monthsData) =>
         monthsData.map((month, index) => ({
           ...month,
-          label: months[index],
+          label: months[index + 1],
         })),
       ),
     [data],
@@ -74,7 +75,7 @@ function MonthsStats({
     <>
       {data.map((employees, index) => (
         <section key={index}>
-          <StatsChart title={months[index]} data={employees} />
+          <StatsChart title={months[index + 1]} data={employees} />
         </section>
       ))}
     </>

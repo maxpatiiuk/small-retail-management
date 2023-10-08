@@ -12,6 +12,7 @@ import {
 import { db } from '../../lib/firestore';
 import { error } from '../../lib/utils';
 import { SECOND } from '../Atoms/timeUnits';
+import { UtcDate } from '../../lib/UtcDate';
 
 export type BaseRecord = { readonly id?: string };
 
@@ -131,7 +132,7 @@ export const documentToData = <T extends BaseRecord>(
       typeof value === 'object' &&
       value !== null &&
       typeof value.seconds === 'number'
-        ? new Date(value.seconds * SECOND)
+        ? UtcDate.fromTimestamp(value.seconds * SECOND)
         : value,
     ]),
   ) as T),

@@ -8,8 +8,9 @@ import { LoadingBar } from '../Molecules/Loading';
 import { StatCell, useMonthStats, useSumStats } from './fetch';
 import { BarChart } from './BarChart';
 import { useStale } from '../Hooks/useStale';
+import { UtcDate } from '../../lib/UtcDate';
 
-export function MonthStats({ date }: { readonly date: Date }): JSX.Element {
+export function MonthStats({ date }: { readonly date: UtcDate }): JSX.Element {
   const { value: data, isStale } = useStale(useMonthStats(date));
 
   return (
@@ -29,7 +30,7 @@ function StatsTable({
   date,
   data,
 }: {
-  readonly date: Date;
+  readonly date: UtcDate;
   readonly data: RA<StatCell>;
 }): JSX.Element {
   const sum = useSumStats(data);
@@ -49,7 +50,7 @@ function StatsTable({
   );
 }
 
-function TableHeader({ date }: { readonly date: Date }): JSX.Element {
+function TableHeader({ date }: { readonly date: UtcDate }): JSX.Element {
   return (
     <Table.Head>
       <Table.Row>
@@ -62,8 +63,7 @@ function TableHeader({ date }: { readonly date: Date }): JSX.Element {
   );
 }
 
-const dateToLabel = (date: Date) =>
-  `${months[date.getMonth()]} ${date.getFullYear()}`;
+const dateToLabel = (date: UtcDate) => `${months[date.month]} ${date.year}`;
 
 function TableRow({
   data,

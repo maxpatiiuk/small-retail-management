@@ -11,6 +11,7 @@ import { Employee } from '../../app/employees/types';
 import { error } from '../../lib/utils';
 import { syncAggregates } from './syncAggregates';
 import { useToday } from '../Hooks/useToday';
+import { UtcDate } from '../../lib/UtcDate';
 
 export function useColumnsData(weekDays: RA<WeekDay>): {
   readonly columnsData: RA<ColumnsData> | undefined;
@@ -57,12 +58,7 @@ function useRemoteData(
   (newEntries: RA<Entry>) => Promise<Changelog<Entry>>,
 ] {
   const firstDate = weekDay[0].date;
-  const lastDate = React.useMemo(() => {
-    const lastDate = weekDay.at(-1)!.date;
-    const nextDay = new Date(lastDate);
-    nextDay.setDate(nextDay.getDate() + 1);
-    return nextDay;
-  }, [weekDay]);
+  const lastDate = weekDay.at(-1)!.date;
 
   // FEAT: update the totals on save
   return useRecords<Entry>(
@@ -70,8 +66,8 @@ function useRemoteData(
       () =>
         query(
           collection(db, 'entries'),
-          where('date', '>=', firstDate),
-          where('date', '<=', lastDate),
+          where('date', '>=', firstDate.unsafeDate),
+          where('date', '<=', lastDate.unsafeDate),
         ),
       [firstDate, lastDate],
     ),
@@ -82,13 +78,11 @@ const indexColumnsData = (
   remoteColumnData: RA<Entry>,
   employees: RA<Employee>,
   weekDays: RA<WeekDay>,
-  today: Date,
+  today: UtcDate,
 ): RA<ColumnsData> =>
   weekDays.map((weekDay) => {
-    const todayString = today.toLocaleDateString();
     const entries = remoteColumnData.filter(
-      (entry) =>
-        entry.date.toLocaleDateString() === weekDay.date.toLocaleDateString(),
+      (entry) => entry.date.unixTimestamp === weekDay.date.unixTimestamp,
     );
     const data = employees.map((employee) => {
       const remoteEntry = entries.find(
@@ -109,7 +103,7 @@ const indexColumnsData = (
     return {
       weekDay,
       data,
-      isToday: todayString === weekDay.date.toLocaleDateString(),
+      isToday: today.unixTimestamp === weekDay.date.unixTimestamp,
     };
   });
 

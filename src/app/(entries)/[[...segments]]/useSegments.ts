@@ -2,6 +2,7 @@ import { f } from '../../../lib/functools';
 import { dateUtils } from '../../../lib/dateUtils';
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
+import { UtcDate } from '../../../lib/UtcDate';
 
 const views = ['day', 'week', 'month', 'year', 'all'] as const;
 export type View = (typeof views)[number];
@@ -10,8 +11,8 @@ const queryStringName = 'date';
 
 export function useSegments(rawDefaultView?: string): {
   readonly view: View;
-  readonly date: Date;
-  readonly getUrl: (view: View, date: Date) => string;
+  readonly date: UtcDate;
+  readonly getUrl: (view: View, date: UtcDate) => string;
 } {
   const searchParams = useSearchParams();
   const rawDate = searchParams.get(queryStringName);
@@ -24,7 +25,7 @@ export function useSegments(rawDefaultView?: string): {
     () =>
       (typeof rawDate === 'string'
         ? dateUtils.date.parse(rawDate)
-        : undefined) ?? new Date(),
+        : undefined) ?? UtcDate.fromNow(),
     [rawDate],
   );
 

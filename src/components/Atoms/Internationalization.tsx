@@ -4,7 +4,7 @@ import { RA } from '../../lib/types';
 import { DAY, MONTH, WEEK, YEAR } from './timeUnits';
 
 // Localized month names
-export const months = getMonthNames('long');
+export const months = ['', ...getMonthNames('long')];
 
 function getMonthNames(format: 'long' | 'short'): RA<string> {
   const months = new Intl.DateTimeFormat(getLanguage(), { month: format });
@@ -22,8 +22,6 @@ function getWeekDays(format: 'long' | 'short'): RA<string> {
     weekDays.format(new Date(2017, 0, weekDay, 0, 0, 0)),
   );
 }
-
-const locale = new Intl.Locale(getLanguage());
 
 /* This is an incomplete definition. For complete, see MDN Docs */
 // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -66,13 +64,9 @@ declare namespace Intl {
   }
 }
 
-export function getFirstDayOfWeek(originalDate: Date): Date {
-  const date = new Date(originalDate);
-  const day = date.getDay();
-  const difference =
-    date.getDate() - day + (locale.weekInfo.firstDay ? 0 : day == 0 ? -6 : 1);
-  return new Date(date.setDate(difference));
-}
+const locale = new Intl.Locale(getLanguage());
+export const firstDayOfWeek =
+  locale.weekInfo.firstDay === 7 ? 0 : locale.weekInfo.firstDay;
 
 const numberFormatter = new Intl.NumberFormat(getLanguage(), {
   style: 'currency',

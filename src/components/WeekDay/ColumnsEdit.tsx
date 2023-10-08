@@ -10,6 +10,7 @@ import { Input } from '../Atoms/Input';
 import { Employee } from '../../app/employees/types';
 import { formatCurrency } from '../Atoms/Internationalization';
 import { computeSalary } from './statUtils';
+import { UtcDate } from '../../lib/UtcDate';
 
 export function ColumnsEdit({
   columnsData,
@@ -25,7 +26,7 @@ export function ColumnsEdit({
           <Table.Header
             scope="row"
             className={isToday ? '!bg-green-100' : 'bg-white'}
-          >{`${weekDay.date.getDate()}, ${weekDay.weekDay}`}</Table.Header>
+          >{`${weekDay.date.day}, ${weekDay.weekDay}`}</Table.Header>
           {data.map(({ employee, entry }, dayIndex) => (
             <CellEdit
               key={dayIndex}
@@ -62,14 +63,13 @@ function CellEdit({
 }: {
   readonly isToday: boolean;
   readonly employee: Employee;
-  readonly date: Date;
+  readonly date: UtcDate;
   readonly entry: Entry;
   readonly onChange: (entry: Entry) => void;
 }): JSX.Element {
-  const dateString = React.useMemo(() => date.toLocaleDateString(), [date]);
   const isEmpty = entry.revenue === 0 && entry.expenses === 0;
   const [isManuallyOpen, setManuallyOpen] = useLiveState(
-    React.useCallback(() => !isEmpty, [dateString]),
+    React.useCallback(() => !isEmpty, [date.unixTimestamp]),
   );
   const isOpen = isManuallyOpen || !isEmpty;
 

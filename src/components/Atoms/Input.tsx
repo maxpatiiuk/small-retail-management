@@ -6,6 +6,7 @@ import { useLiveState } from '../Hooks/useLiveState';
 import { dateUtils } from '../../lib/dateUtils';
 import { useBooleanState } from '../Hooks/useBooleanState';
 import { formatCurrency } from './Internationalization';
+import { UtcDate } from '../../lib/UtcDate';
 
 const InputGeneric = wrap<
   'input',
@@ -39,8 +40,8 @@ const inputWeekSupported = !isSafari;
 
 const createDateInput = (
   type: 'date' | 'week' | 'month' | 'number',
-  format: (date: Date) => string,
-  parse: (rawDate: string) => Date | undefined,
+  format: (date: UtcDate) => string,
+  parse: (rawDate: string) => UtcDate | undefined,
 ) =>
   function ({
     date,
@@ -50,8 +51,8 @@ const createDateInput = (
     Parameters<typeof InputGeneric>[0],
     'type' | 'onValueChange' | 'value'
   > & {
-    readonly date: Date;
-    readonly onDateChange: (date: Date) => void;
+    readonly date: UtcDate;
+    readonly onDateChange: (date: UtcDate) => void;
   }): JSX.Element {
     const [pendingDate, setPendingDate] = useLiveState(
       React.useCallback(() => f.maybe(date, format), [date]),

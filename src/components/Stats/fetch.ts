@@ -11,6 +11,7 @@ import { MONTH, YEAR } from '../Atoms/timeUnits';
 import { db } from '../../lib/firestore';
 import { BaseRecord, documentToData } from '../Hooks/useRecords';
 import { f } from '../../lib/functools';
+import { UtcDate } from '../../lib/UtcDate';
 
 export type StatCell = DeltaEntry & {
   readonly salary: number;
@@ -18,17 +19,15 @@ export type StatCell = DeltaEntry & {
   readonly employeeId: string;
 };
 
-export function useMonthStats(date: Date): RA<StatCell> | undefined {
+export function useMonthStats(date: UtcDate): RA<StatCell> | undefined {
   const employees = React.useContext(EmployeesContext);
-  const year = date.getFullYear();
-  const month = date.getMonth() + 1;
   return useAsyncState(
     React.useCallback(
       () =>
         employees === undefined
           ? undefined
-          : fetchMonthStats(employees, year, month),
-      [employees, year, month],
+          : fetchMonthStats(employees, date.year, date.month),
+      [employees, date.year, date.month],
     ),
     true,
   )[0];
@@ -79,9 +78,8 @@ export function documentToStatCell(
   };
 }
 
-export function useYearStats(date: Date): RA<RA<StatCell>> | undefined {
+export function useYearStats(date: UtcDate): RA<RA<StatCell>> | undefined {
   const employees = React.useContext(EmployeesContext);
-  const year = date.getFullYear();
   return useAsyncState(
     React.useCallback(
       () =>
@@ -89,10 +87,10 @@ export function useYearStats(date: Date): RA<RA<StatCell>> | undefined {
           ? undefined
           : Promise.all(
               f.between(1, YEAR / MONTH + 1, (month) =>
-                fetchMonthStats(employees, year, month),
+                fetchMonthStats(employees, date.year, month),
               ),
             ),
-      [employees, year],
+      [employees, date.year],
     ),
     true,
   )[0];

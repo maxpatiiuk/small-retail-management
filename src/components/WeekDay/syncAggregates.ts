@@ -10,8 +10,9 @@ import { Changelog } from '../Hooks/useRecords';
 import { Entry } from './types';
 import { DocumentSnapshot, doc, getDoc, setDoc } from 'firebase/firestore';
 
-export const syncAggregates = async (changelog: Changelog<Entry>) =>
-  applyDeltas(computeDeltas(changelog));
+export const syncAggregates = async (
+  changelog: Changelog<Entry>,
+): Promise<void> => applyDeltas(computeDeltas(changelog));
 
 type Deltas = Record<number, Record<number, Record<string, DeltaEntry>>>;
 export type DeltaEntry = { revenue: number; expenses: number };
@@ -36,8 +37,8 @@ function computeDeltas(changelog: Changelog<Entry>): Deltas {
     revenue: number,
     expenses: number,
   ) {
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1;
+    const year = date.year;
+    const month = date.month;
 
     deltas[year] ??= {};
     deltas[year][month] ??= {};

@@ -4,7 +4,7 @@ import { localization } from '../../const/localization';
 import { RA } from '../../lib/types';
 import { View } from '../../app/(entries)/[[...segments]]/useSegments';
 import {
-  getFirstDayOfWeek,
+  firstDayOfWeek,
   months,
   weekDays,
 } from '../Atoms/Internationalization';
@@ -18,13 +18,14 @@ import { LoadingBar, loading } from '../Molecules/Loading';
 import { className } from '../Atoms/className';
 import { EmployeesContext } from '../../app/employees';
 import { useStale } from '../Hooks/useStale';
+import { UtcDate } from '../../lib/UtcDate';
 
 export function ColumnsContent({
   view,
   date,
 }: {
   readonly view: View;
-  readonly date: Date;
+  readonly date: UtcDate;
 }): JSX.Element {
   const daysCount = (view === 'day' ? DAY : WEEK) / DAY;
   const weekDays = useWeekDays(daysCount, date);
@@ -66,26 +67,28 @@ export function ColumnsContent({
 }
 
 export type WeekDay = {
-  readonly date: Date;
+  readonly date: UtcDate;
   readonly weekDay: string;
 };
 
-function useWeekDays(daysCount: number, currentDate: Date): RA<WeekDay> {
+function useWeekDays(daysCount: number, currentDate: UtcDate): RA<WeekDay> {
   return React.useMemo(() => {
-    const firstDay = getFirstDayOfWeek(currentDate);
+    const firstDay = currentDate.clone();
+    firstDay.dayOfWeek =
+      firstDayOfWeek === 0 ? 0 : firstDay.dayOfWeek === 0 ? -6 : 1;
 
     const dates =
       daysCount === 1
         ? [currentDate]
         : Array.from({ length: daysCount }, (_, index) => {
-            const date = new Date(firstDay);
-            date.setDate(firstDay.getDate() + index);
+            const date = firstDay.clone();
+            date.day += index;
             return date;
           });
 
     return dates.map((date) => ({
       date,
-      weekDay: weekDays[date.getDay()],
+      weekDay: weekDays[date.dayOfWeek],
     }));
   }, [daysCount, currentDate]);
 }
@@ -98,7 +101,7 @@ function TableHeader({
   const employees = React.useContext(EmployeesContext);
   const dateLabel = React.useMemo(
     () =>
-      Array.from(new Set(weekDays.map(({ date }) => date.getMonth())))
+      Array.from(new Set(weekDays.map(({ date }) => date.month)))
         .map((monthIndex) => months[monthIndex])
         .join(' - '),
     [weekDays],
