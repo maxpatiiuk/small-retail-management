@@ -43,7 +43,9 @@ export function useAsyncState<T>(
     setState(undefined);
 
     const promise = Promise.resolve(callback()).then((newState) =>
-      destructorCalled ? undefined : setState(newState),
+      destructorCalled
+        ? undefined
+        : setState(typeof newState === 'function' ? () => newState : newState),
     );
 
     if (loadingScreen) loading(promise);
