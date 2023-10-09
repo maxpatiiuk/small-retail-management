@@ -12,7 +12,7 @@ decisions.
 
 - Conveniently enter data for the day or entire week from your phone or desktop
 - See total revenue, expenses and salary for each employee for the month, year
-  or all time.
+  or all time
 - Easily jump between dates to see historical data
 - Add employees, set revenue share percentage and base salary - total salary
   will be calculated automatically
@@ -31,17 +31,19 @@ decisions.
    npm i
    ```
 
-3. [Create a Firebase project and a Firestore database](https://firebase.google.com/docs/firestore/quickstart?hl=en&authuser=0)
+3. [Create a Firebase project and a Firestore database](https://firebase.google.com/docs/firestore/quickstart?hl=en&authuser=0).
 
 4. Use security rules in [./firestore.rules](./firestore.rules) for the
    Firestore database. Modify the `isAuthenticated` function to match your
    security needs - for example allow only users with certain email addresses to
-   access your application
+   access your application.
 
 5. [Generate your Firebase config object](https://firebase.google.com/docs/web/learn-more?authuser=0#config-object).
-   Then put it into [./src/lib/firebase.ts](./src/lib/firebase.ts)
 
-6. [Enable Firebase authentication and enable Google authentication provider](https://firebase.google.com/docs/auth/web/google-signin?authuser=0&hl=en#before_you_begin).
+6. Copy [./example.env.local](./example.env.local) into `.env.local` and fill it
+   in with values generated in the previous step.
+
+7. [Enable Firebase authentication and enable Google authentication provider](https://firebase.google.com/docs/auth/web/google-signin?authuser=0&hl=en#before_you_begin).
 
 ## Development
 

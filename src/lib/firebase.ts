@@ -9,14 +9,15 @@ import { initializeApp } from 'firebase/app';
  * "Token Service API" APIs
  * Also, restrict to the domain of your app
  */
+
 const firebaseConfig = {
-  apiKey: 'AIzaSyDKa1y-t8ouewErj0gjMVYYgTNe3d25FIc',
-  authDomain: 'one-c-table.firebaseapp.com',
-  projectId: 'one-c-table',
-  storageBucket: 'one-c-table.appspot.com',
-  messagingSenderId: '154090780350',
-  appId: '1:154090780350:web:a90e5710ca68e121d690ef',
-  measurementId: 'G-7X5SLC9RTM',
+  apiKey: process.env.NEXT_PUBLIC_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_MEASUREMENT_ID,
 };
 
 // Initialize Firebase

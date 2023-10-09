@@ -36,8 +36,6 @@ const process = (rawData: string): RA<Entry> =>
       ),
     }));
 
-// TODO: firebase -> settings -> environment type -> production
-// TODO: decide between vercel and firebase hosting
 export function Migration(): JSX.Element {
   return (
     <Button.Danger
