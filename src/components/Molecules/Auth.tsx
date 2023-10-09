@@ -3,6 +3,7 @@
 import React from 'react';
 import {
   GoogleAuthProvider,
+  browserPopupRedirectResolver,
   getAuth,
   onAuthStateChanged,
   signInWithPopup,
@@ -74,7 +75,7 @@ export function Auth({
 
 async function authenticate(auth: Auth): Promise<void> {
   const provider = new GoogleAuthProvider();
-  await signInWithPopup(auth, provider);
+  await signInWithPopup(auth, provider, browserPopupRedirectResolver);
 }
 
 /**
