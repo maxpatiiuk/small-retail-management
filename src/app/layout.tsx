@@ -3,7 +3,6 @@
 import 'tailwindcss/tailwind.css';
 
 import React from 'react';
-import { ServiceWorker } from '../components/Molecules/ServiceWorker';
 import { getLanguage } from '../lib/localization';
 import { localization } from '../const/localization';
 import { themeColor } from '../const/siteConfig';
@@ -42,7 +41,6 @@ export default function RootLayout({
           <Auth>
             <EmployeesProvider>{children}</EmployeesProvider>
           </Auth>
-          <ServiceWorker />
         </div>
       </body>
     </html>
