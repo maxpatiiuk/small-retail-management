@@ -60,7 +60,6 @@ function useRemoteData(
   const firstDate = weekDay[0].date;
   const lastDate = weekDay.at(-1)!.date;
 
-  // FEAT: update the totals on save
   return useRecords<Entry>(
     React.useMemo(
       () =>
