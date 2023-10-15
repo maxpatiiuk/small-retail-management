@@ -29,7 +29,11 @@ declare namespace Intl {
   class Locale {
     public constructor(locales?: RA<string> | string);
 
-    public weekInfo: {
+    public weekInfo?: {
+      readonly firstDay: 1 | 7;
+    };
+
+    public getWeekInfo?: () => {
       readonly firstDay: 1 | 7;
     };
   }
@@ -65,8 +69,9 @@ declare namespace Intl {
 }
 
 const locale = new Intl.Locale(getLanguage());
+const weekInfo = locale.getWeekInfo?.() ?? locale.weekInfo;
 export const firstDayOfWeek =
-  locale.weekInfo.firstDay === 7 ? 0 : locale.weekInfo.firstDay;
+  weekInfo?.firstDay === 7 ? 0 : weekInfo?.firstDay ?? 1;
 
 const numberFormatter = new Intl.NumberFormat(getLanguage(), {
   style: 'currency',
