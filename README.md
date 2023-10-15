@@ -45,6 +45,8 @@ decisions.
 
 7. [Enable Firebase authentication and enable Google authentication provider](https://firebase.google.com/docs/auth/web/google-signin?authuser=0&hl=en#before_you_begin).
 
+8. [Enable daily and weekly backups of the database](https://firebase.google.com/docs/firestore/backups)
+
 ## Development
 
 ```zsh
