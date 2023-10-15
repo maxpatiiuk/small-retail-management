@@ -119,15 +119,17 @@ const fetchAllStats = async (
               .map((document) => [document.id!, document] as const),
           );
 
-          const years = Object.keys(documents).map(Number.parseInt);
-          const minYear = Math.min(...years);
-          const maxYear = Math.max(...years);
-          return Object.fromEntries(
-            f.between(minYear, maxYear + 1, (year) => [
-              year,
-              documentToStatCell(employee, documents[year], YEAR),
-            ]),
-          );
+          const years = Object.keys(documents).map(f.parseInt);
+          const minYear = f.min(...years);
+          const maxYear = f.max(...years);
+          return minYear === undefined || maxYear === undefined
+            ? {}
+            : Object.fromEntries(
+                f.between(minYear, maxYear + 1, (year) => [
+                  year,
+                  documentToStatCell(employee, documents[year], YEAR),
+                ]),
+              );
         })
         .catch((error) => {
           console.error(error, { employee });
