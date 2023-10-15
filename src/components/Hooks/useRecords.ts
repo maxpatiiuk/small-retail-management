@@ -65,17 +65,7 @@ export async function reconcileRecords<T extends BaseRecord>(
   // Created added
   const newData = updatedData.filter(({ id }) => id === undefined);
   const addPromises = newData.map(({ id: _, ...data }) =>
-    addDoc(
-      collection(db, collectionName),
-      Object.fromEntries(
-        Object.entries(data).map(([key, value]) => [
-          key,
-          typeof value === 'object' && value instanceof UtcDate
-            ? value.unsafeDate
-            : value,
-        ]),
-      ),
-    ),
+    addDoc(collection(db, collectionName), serializeData(data)),
   );
 
   const preservedData = updatedData.filter(({ id }) => id !== undefined);
@@ -87,7 +77,7 @@ export async function reconcileRecords<T extends BaseRecord>(
       normalize(documentToData(indexedDocuments[data.id!])) !== normalize(data),
   );
   const updatePromises = modifiedData.map(({ id, ...record }) =>
-    updateDoc(indexedDocuments[id!]?.ref, record),
+    updateDoc(indexedDocuments[id!]?.ref, serializeData(record)),
   );
 
   return Promise.all([
@@ -147,6 +137,16 @@ export const documentToData = <T extends BaseRecord>(
     ]),
   ) as T),
 });
+
+const serializeData = <T extends BaseRecord>(data: Omit<T, 'id'>) =>
+  Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [
+      key,
+      typeof value === 'object' && value instanceof UtcDate
+        ? value.unsafeDate
+        : value,
+    ]),
+  );
 
 const normalize = ({ id: _, ...data }: IR<unknown>) =>
   JSON.stringify(
