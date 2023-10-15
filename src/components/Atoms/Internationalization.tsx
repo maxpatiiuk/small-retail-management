@@ -1,5 +1,5 @@
 import { f } from '../../lib/functools';
-import { currencies, getLanguage } from '../../lib/localization';
+import { getLanguage } from '../../lib/localization';
 import { RA } from '../../lib/types';
 import { DAY, MONTH, WEEK, YEAR } from './timeUnits';
 
@@ -75,7 +75,7 @@ export const firstDayOfWeek =
 
 const numberFormatter = new Intl.NumberFormat(getLanguage(), {
   style: 'currency',
-  currency: currencies[getLanguage()],
+  currency: process.env.NEXT_PUBLIC_CURRENCY ?? 'USD',
   currencyDisplay: 'narrowSymbol',
   roundingMode: 'halfEven',
   trailingZeroDisplay: 'stripIfInteger',
