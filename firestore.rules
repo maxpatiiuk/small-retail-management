@@ -19,8 +19,8 @@ service cloud.firestore {
     match /employees/{employeeId} {
       allow read, delete: if isAuthenticated()
       allow update, create: if isAuthenticated()
-        && request.resource.data.keys().hasAll(['baseSalary', 'isActive', 'name', 'incomeShare'])
-        && request.resource.data.keys().size() == 4
+        && request.resource.data.keys().hasAll(['baseSalary', 'isActive', 'name', 'incomeShare', 'order'])
+        && request.resource.data.keys().size() == 5
         && request.resource.data.baseSalary is number
         && request.resource.data.baseSalary >= 0
         && request.resource.data.isActive is bool
@@ -28,7 +28,9 @@ service cloud.firestore {
         && request.resource.data.name.size() > 0
         && request.resource.data.incomeShare is int
         && request.resource.data.incomeShare >= 0
-        && request.resource.data.incomeShare <= 100;
+        && request.resource.data.incomeShare <= 100
+        && request.resource.data.order is int
+        && request.resource.data.order >= 0;
     }
   
     match /entries/{entryId} {

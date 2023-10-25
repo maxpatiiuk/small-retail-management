@@ -7,12 +7,28 @@ import { Employee } from './types';
 export function EmployeeRow({
   employee,
   onChange: handleChange,
+  onOrderUp: handleOrderUp,
+  onOrderDown: handleOrderDown,
 }: {
   readonly employee: Employee;
   readonly onChange: (employee: Employee | undefined) => void;
+  readonly onOrderUp: (() => void) | undefined;
+  readonly onOrderDown: (() => void) | undefined;
 }): JSX.Element {
   return (
     <Table.Row>
+      <Table.Cell>
+        <Button.Icon
+          onClick={handleOrderUp}
+          title={localization.moveUp}
+          icon="chevronUp"
+        />
+        <Button.Icon
+          onClick={handleOrderDown}
+          title={localization.moveDown}
+          icon="chevronDown"
+        />
+      </Table.Cell>
       <Table.Cell>
         <Input.Text
           aria-label={localization.name}

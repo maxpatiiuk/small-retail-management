@@ -4,4 +4,5 @@ export type Employee = {
   readonly isActive: boolean;
   readonly baseSalary: number;
   readonly incomeShare: number;
+  readonly order: number;
 };

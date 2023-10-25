@@ -151,4 +151,16 @@ export const localization = dictionary({
     en: 'Group by:',
     uk: 'Групувати за:',
   },
+  order: {
+    en: 'Order',
+    uk: 'Порядок',
+  },
+  moveUp: {
+    en: 'Move up',
+    uk: 'Перемістити вгору',
+  },
+  moveDown: {
+    en: 'Move down',
+    uk: 'Перемістити вниз',
+  },
 });
