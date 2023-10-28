@@ -19,6 +19,7 @@ import { className } from '../Atoms/className';
 import { EmployeesContext } from '../../app/employees';
 import { useStale } from '../Hooks/useStale';
 import { UtcDate } from '../../lib/UtcDate';
+import { useLiveState } from '../Hooks/useLiveState';
 
 export function ColumnsContent({
   view,
@@ -40,6 +41,10 @@ export function ColumnsContent({
 
   const employees = React.useContext(EmployeesContext);
 
+  const [needsSaving, setNeedsSaving] = useLiveState(
+    React.useCallback(() => false, [weekDays]),
+  );
+
   return (
     <>
       {isStale && <LoadingBar />}
@@ -52,14 +57,22 @@ export function ColumnsContent({
             }
           >
             <TableHeader weekDays={weekDays} />
-            <ColumnsEdit columnsData={columnsData} onChange={setColumnsData} />
+            <ColumnsEdit
+              columnsData={columnsData}
+              onChange={(columnsData): void => {
+                setColumnsData(columnsData);
+                setNeedsSaving(true);
+              }}
+            />
             {columnsData.length > 1 && <SumRow columnsData={columnsData} />}
           </Table.Container>
           <div className="flex gap-2 justify-between">
             <Button.Danger onClick={handleReset}>
               {localization.cancel}
             </Button.Danger>
-            <Submit.Success>{localization.save}</Submit.Success>
+            <Submit.Success disabled={!needsSaving}>
+              {localization.save}
+            </Submit.Success>
           </div>
         </Form>
       )}
