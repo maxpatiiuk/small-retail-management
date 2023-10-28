@@ -8,9 +8,7 @@ import { useLiveState } from '../Hooks/useLiveState';
 import { localization } from '../../const/localization';
 import { Input } from '../Atoms/Input';
 import { Employee } from '../../app/employees/types';
-import { formatCurrency } from '../Atoms/Internationalization';
 import { computeSalary } from './statUtils';
-import { UtcDate } from '../../lib/UtcDate';
 
 export function ColumnsEdit({
   columnsData,
@@ -32,7 +30,7 @@ export function ColumnsEdit({
               key={dayIndex}
               employee={employee}
               isToday={isToday}
-              date={weekDay.date}
+              itemKey={weekDay.date.unixTimestamp}
               entry={entry}
               onChange={(entry): void =>
                 handleChange(
@@ -54,22 +52,22 @@ export function ColumnsEdit({
   );
 }
 
-function CellEdit({
+export function CellEdit({
   employee,
   isToday,
-  date,
+  itemKey,
   entry,
   onChange: handleChange,
 }: {
   readonly isToday: boolean;
   readonly employee: Employee;
-  readonly date: UtcDate;
+  readonly itemKey: number | undefined;
   readonly entry: Entry;
-  readonly onChange: (entry: Entry) => void;
+  readonly onChange: ((entry: Entry) => void) | undefined;
 }): JSX.Element {
   const isEmpty = entry.revenue === 0 && entry.expenses === 0;
   const [isManuallyOpen, setManuallyOpen] = useLiveState(
-    React.useCallback(() => !isEmpty, [date.unixTimestamp]),
+    React.useCallback(() => !isEmpty, [itemKey]),
   );
   const isOpen = isManuallyOpen || !isEmpty;
 
@@ -99,10 +97,10 @@ function EntryEdit({
 }: {
   readonly employee: Employee;
   readonly entry: Entry;
-  readonly onChange: (entry: Entry) => void;
+  readonly onChange: ((entry: Entry) => void) | undefined;
 }): JSX.Element {
   const salary = React.useMemo(
-    () => formatCurrency(computeSalary(employee, entry)),
+    () => computeSalary(employee, entry),
     [employee, entry],
   );
   return (
@@ -111,17 +109,25 @@ function EntryEdit({
         placeholder={localization.revenue}
         aria-label={localization.revenue}
         value={entry.revenue}
-        onValueChange={(revenue): void => handleChange({ ...entry, revenue })}
+        onValueChange={
+          handleChange === undefined
+            ? undefined
+            : (revenue): void => handleChange({ ...entry, revenue })
+        }
         className="!p-1"
       />
       <Input.Currency
         placeholder={localization.expenses}
         aria-label={localization.expenses}
         value={entry.expenses}
-        onValueChange={(expenses): void => handleChange({ ...entry, expenses })}
+        onValueChange={
+          handleChange === undefined
+            ? undefined
+            : (expenses): void => handleChange({ ...entry, expenses })
+        }
         className="!p-1"
       />
-      <Input.Text
+      <Input.Currency
         placeholder={localization.salary}
         aria-label={localization.salary}
         value={salary}

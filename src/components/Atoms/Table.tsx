@@ -35,4 +35,5 @@ export const Table = {
     }),
   ),
   Cell: wrap('Table.Cell', 'td', 'flex items-center gap-1'),
+  Footer: wrap('Table.Footer', 'tfoot', 'contents'),
 };

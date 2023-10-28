@@ -176,11 +176,15 @@ export const Input = {
       () => (typeof value === 'number' ? formatCurrency(value) : value),
       [value],
     );
+    const isReadOnly =
+      (handleValueChange === undefined && rest.onChange === undefined) ||
+      rest.readOnly ||
+      rest.disabled;
     return isFocused ? (
       <InputNumber
+        {...rest}
         value={(value ?? 0) === 0 ? '' : value}
         onValueChange={handleValueChange}
-        {...rest}
         onBlur={(event): void => {
           handleBlur();
           rest.onBlur?.(event);
@@ -190,10 +194,11 @@ export const Input = {
     ) : (
       <InputText
         value={(value ?? 0) === 0 ? '' : formatted}
+        readOnly={isReadOnly}
         onValueChange={() => console.error('Not supposed to be called')}
         {...rest}
         onFocus={(event): void => {
-          handleFocused();
+          if (!isReadOnly) handleFocused();
           rest.onFocus?.(event);
         }}
       />

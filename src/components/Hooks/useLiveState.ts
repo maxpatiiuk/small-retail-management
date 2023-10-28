@@ -25,6 +25,7 @@ import { GetOrSet } from '../../lib/types';
  * ```
  */
 export function useLiveState<T>(callback: () => T): GetOrSet<T> {
+  const previousCallback = React.useRef(callback);
   const defaultValue = React.useMemo(callback, [callback]);
   const [state, setState] = React.useState<T>(defaultValue);
   const stateRef = React.useRef(state);
@@ -38,10 +39,9 @@ export function useLiveState<T>(callback: () => T): GetOrSet<T> {
     setState(resolvedValue);
   }, []);
 
-  const previousDefaultValue = React.useRef(defaultValue);
-  const hasChanged = previousDefaultValue.current !== defaultValue;
+  const hasChanged = previousCallback.current !== callback;
   if (hasChanged) {
-    previousDefaultValue.current = defaultValue;
+    previousCallback.current = callback;
     updateState(defaultValue);
   }
 

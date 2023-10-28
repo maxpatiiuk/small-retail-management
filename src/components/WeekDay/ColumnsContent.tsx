@@ -9,10 +9,10 @@ import {
   weekDays,
 } from '../Atoms/Internationalization';
 import { DAY, WEEK } from '../Atoms/timeUnits';
-import { ColumnsEdit } from './ColumnsEdit';
+import { CellEdit, ColumnsEdit } from './ColumnsEdit';
 import { Form } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import { useColumnsData } from './useColumnsData';
+import { ColumnsData, useColumnsData } from './useColumnsData';
 import { Submit } from '../Atoms/Submit';
 import { LoadingBar, loading } from '../Molecules/Loading';
 import { className } from '../Atoms/className';
@@ -53,6 +53,7 @@ export function ColumnsContent({
           >
             <TableHeader weekDays={weekDays} />
             <ColumnsEdit columnsData={columnsData} onChange={setColumnsData} />
+            {columnsData.length > 1 && <SumRow columnsData={columnsData} />}
           </Table.Container>
           <div className="flex gap-2 justify-between">
             <Button.Danger onClick={handleReset}>
@@ -117,5 +118,55 @@ function TableHeader({
         ))}
       </Table.Row>
     </Table.Head>
+  );
+}
+
+function SumRow({
+  columnsData,
+}: {
+  readonly columnsData: RA<ColumnsData> | undefined;
+}): JSX.Element {
+  const summed = useSummed(columnsData);
+  return (
+    <Table.Footer>
+      <Table.Row className={className.specialRow}>
+        <Table.Header scope="row">{localization.total}</Table.Header>
+        {summed.map(({ employee, entry }, dayIndex) => (
+          <CellEdit
+            key={dayIndex}
+            employee={employee}
+            isToday={false}
+            itemKey={undefined}
+            entry={entry}
+            onChange={undefined}
+          />
+        ))}
+      </Table.Row>
+    </Table.Footer>
+  );
+}
+
+const fakeDate = UtcDate.fromNow();
+function useSummed(columnsData: RA<ColumnsData> | undefined) {
+  const employees = React.useContext(EmployeesContext);
+  return React.useMemo(
+    () =>
+      employees.map((employee) => ({
+        employee,
+        entry: (columnsData ?? []).reduce(
+          (total, { data }) => {
+            const entry = data.find(
+              ({ employee: { id } }) => id === employee.id,
+            )?.entry;
+            return {
+              ...total,
+              revenue: total.revenue + (entry?.revenue ?? 0),
+              expenses: total.expenses + (entry?.expenses ?? 0),
+            };
+          },
+          { revenue: 0, expenses: 0, employeeId: employee.id!, date: fakeDate },
+        ),
+      })),
+    [columnsData, employees],
   );
 }

@@ -18,4 +18,5 @@ export const className = {
     [&_:is(th,td)]:p-1 [&_:is(th,td)]:sm:p-2 [&_:is(th,td)]:ring-1
     [&_:is(th,td)]:ring-gray-300
     [&_tr:nth-child(even)_:is(th,td)]:bg-gray-200 p-px`,
+  specialRow: `[&_:is(th,td)]:bg-gray-300`,
 };
