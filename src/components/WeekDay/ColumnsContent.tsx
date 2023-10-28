@@ -143,7 +143,14 @@ function SumRow({
   return (
     <Table.Footer>
       <Table.Row className={className.specialRow}>
-        <Table.Header scope="row">{localization.total}</Table.Header>
+        <Table.Header
+          className="flex-col justify-between !items-end !pt-3 !pb-3"
+          scope="row"
+        >
+          <span>{localization.revenue}</span>
+          <span>{localization.expenses}</span>
+          <span>{localization.salary}</span>
+        </Table.Header>
         {summed.map(({ employee, entry }, dayIndex) => (
           <CellEdit
             key={dayIndex}
