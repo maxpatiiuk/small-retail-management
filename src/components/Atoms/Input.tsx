@@ -109,6 +109,17 @@ const InputNumber = wrap<
   ({ onValueChange: handleValueChange, ...props }) => ({
     ...props,
     type: 'number',
+    /*
+     * Disable scroll wheel accidentally changing input value
+     * https://stackoverflow.com/a/69497807/8584605
+     */
+    onWheel(event): void {
+      const target = event.target as HTMLElement;
+      target.blur();
+      setTimeout(() => target.focus(), 0);
+
+      props.onWheel?.(event);
+    },
     onChange(event): void {
       handleValueChange?.(
         // This non-null assertion is unsafe, but simplifies typing
