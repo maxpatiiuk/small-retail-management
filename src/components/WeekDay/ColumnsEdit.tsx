@@ -114,7 +114,7 @@ function EntryEdit({
             ? undefined
             : (revenue): void => handleChange({ ...entry, revenue })
         }
-        className="!p-1"
+        className="!p-1 bg-green-100/50"
       />
       <Input.Currency
         placeholder={localization.expenses}
@@ -125,14 +125,14 @@ function EntryEdit({
             ? undefined
             : (expenses): void => handleChange({ ...entry, expenses })
         }
-        className="!p-1"
+        className="!p-1 bg-blue-100/50"
       />
       <Input.Currency
         placeholder={localization.salary}
         aria-label={localization.salary}
         value={salary}
         readOnly
-        className="!p-1"
+        className="!p-1 bg-red-100/50"
       />
     </>
   );
