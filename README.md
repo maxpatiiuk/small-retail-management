@@ -22,7 +22,7 @@ decisions.
 1. Clone this repository:
 
    ```sh
-   git clone https://github.com/maxxxxxdlp/small-retail-management
+   git clone https://github.com/maxpatiiuk/small-retail-management
    ```
 
 2. Install dependencies:

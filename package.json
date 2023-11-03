@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/maxxxxxdlp/one-c-table"
+    "url": "https://github.com/maxpatiiuk/one-c-table"
   },
   "scripts": {
     "build": "next build",
